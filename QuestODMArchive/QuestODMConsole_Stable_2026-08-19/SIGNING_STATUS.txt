@@ -1,8 +1,0 @@
-Quest ODM Operations Console 1.1.0-preview.6 signing status
-
-Status: UNSIGNED PREVIEW BUILD
-Build: V1.1-PREVIEW-20260817.6
-
-No Authenticode signature was applied on the Linux build host. Windows may display execution-policy, SmartScreen, or unknown-publisher warnings. Sign a final release with an approved organization code-signing certificate and rerun Tools\Test-CodeSigning.ps1 plus the complete Windows acceptance suite.
-
-The callback-scope correction does not add credentials, tokens, cookies, secrets, or authentication artifacts to the package.

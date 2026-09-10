@@ -91,3 +91,6 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 .DS_Store
+
+# Local immutable archives must remain outside source control
+/QuestODMArchive/
