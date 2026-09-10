@@ -1,0 +1,66 @@
+{
+  "ConsoleVersion": "1.1.0-preview.6",
+  "MinimumOdmApiVersion": "2.1.396",
+  "ValidatedOdmApiVersions": [
+    "2.1.396"
+  ],
+  "RequiredCommands": {
+    "Core": [
+      "Connect-OdmService",
+      "Select-OdmOrganization",
+      "Get-OdmProject",
+      "Select-OdmProject",
+      "Get-OdmProjectWorkload",
+      "Select-OdmProjectWorkload",
+      "Get-OdmObject",
+      "Get-OdmTask",
+      "Get-OdmCollection"
+    ],
+    "Membership": [
+      "Add-OdmObject",
+      "Remove-OdmObject",
+      "New-OdmCollection",
+      "Remove-OdmCollection"
+    ],
+    "TaskLifecycle": [
+      "Start-OdmTask",
+      "Stop-OdmTask",
+      "Remove-OdmTask"
+    ],
+    "AccountDiscovery": [
+      "New-OdmDiscoveryTask",
+      "New-OdmMappingFileTask"
+    ],
+    "TaskFactory": [
+      "New-OdmMailMigrationTask",
+      "New-OdmOneDriveMigrationTask",
+      "New-OdmMeetingLinkMigrationTask",
+      "New-OdmMailSwitchTask"
+    ],
+    "Readiness": [
+      "Get-OdmRoleAssignments",
+      "Get-OdmRoles",
+      "Get-EffectiveMigrationSubscription",
+      "Test-ActiveMigrationSubscription"
+    ],
+    "TaskMonitoring": [
+      "Get-OdmEvent",
+      "Get-OdmReporting"
+    ],
+    "Reporting": [
+      "Get-OdmReportInfo",
+      "Get-OdmReport",
+      "New-OdmReportingErrorLogsExportTask"
+    ]
+  },
+  "OptionalCommands": [
+    "Disconnect-OdmService",
+    "Get-OdmOrganizations",
+    "Get-OdmActiveOrganizations",
+    "Get-OdmTaskTemplates",
+    "Add-OdmTask",
+    "Get-OdmReportInfo",
+    "Get-OdmReport",
+    "New-OdmReportingErrorLogsExportTask"
+  ]
+}

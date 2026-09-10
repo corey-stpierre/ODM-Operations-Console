@@ -1,0 +1,93 @@
+# Quest ODM Operations Console
+
+# Runtime logs and generated support data
+Logs/*
+!Logs/.gitkeep
+**/Logs/*
+!**/Logs/.gitkeep
+Reports/
+Output/
+Exports/
+SupportBundles/
+support-bundles/
+*.log
+*.etl
+*.dmp
+*.trace
+*.tmp
+*.temp
+*.bak
+*.old
+
+# Local configuration, authentication, and secrets
+Config/*.local.json
+**/*.local.json
+.env
+.env.*
+secrets/
+tokens/
+auth/
+credentials/
+*.secret.json
+*.secrets.json
+*.clixml
+*.pfx
+*.p12
+*.pem
+*.key
+*.jks
+
+# Customer and engagement working data
+Data/
+Imports/
+CustomerData/
+customer-data/
+WorkingData/
+working-data/
+*.csv
+*.xlsx
+*.xls
+!Samples/**/*.csv
+!MappingCollisionUtility/Samples/**/*.csv
+
+# Build and packaging output
+build/
+dist/
+release/
+releases/
+artifacts/
+packages/
+*.zip
+*.7z
+*.nupkg
+*.exe
+*.msi
+*.msix
+
+# Test and coverage output
+TestResults/
+tests/results/
+coverage/
+*.trx
+*.coverage
+*.coveragexml
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# PowerShell/editor state
+.vs/
+.vscode/*.local.json
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+PSReadLine_history.txt
+
+# Operating-system metadata
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store

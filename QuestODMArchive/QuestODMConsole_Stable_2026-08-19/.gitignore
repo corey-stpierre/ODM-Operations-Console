@@ -1,0 +1,6 @@
+Logs/*.log
+Logs/*.txt
+!Logs/.gitkeep
+Config/*.local.json
+*.zip
+__pycache__/

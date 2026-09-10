@@ -1,0 +1,38 @@
+name: Feature request
+description: Propose a console, engine, validation, or packaging enhancement.
+title: '[Feature] '
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Operational problem
+      description: Describe the workflow or control gap.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Include preview, validation, audit, and rollback expectations where relevant.
+    validations:
+      required: true
+  - type: dropdown
+    id: risk
+    attributes:
+      label: Quest impact
+      options:
+        - Read-only
+        - Creates or changes Quest objects
+        - Deletes Quest objects
+        - Authentication or authorization
+        - Packaging or deployment only
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+    validations:
+      required: true

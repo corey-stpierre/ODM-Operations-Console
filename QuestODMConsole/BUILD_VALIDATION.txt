@@ -1,0 +1,49 @@
+Repository preparation note (2026-08-25):
+- This is the historical Preview 6 build-validation record.
+- The GitHub-ready source adds repository metadata and sanitizes legacy examples.
+- See docs/REPOSITORY_PREPARATION.md for current-tree changes and validation.
+
+Quest ODM Operations Console 1.1.0-preview.6 - Build Validation
+Build ID: V1.1-PREVIEW-20260817.6
+Build date UTC: 2026-08-17T17:50:00Z
+Immediate baseline: Quest ODM Operations Console 1.1.0-preview.5
+Stable baseline: Quest ODM Operations Console 1.0.3
+
+Platform-neutral validation targets:
+- Required package files and 16 legacy scripts
+- UTF-8/BOM policy for PowerShell sources
+- PowerShell lexical/delimiter checks
+- Main and utility XAML XML parsing
+- Static/Dynamic resource resolution
+- Main/utility control reference validation
+- Production callback-scope regression guard
+- Absence of production GetNewClosure() calls
+- Bulk result callback context and failure cleanup markers
+- CSV membership action footer containment markers
+- Theme and log-maintenance regression markers
+- JSON parsing and default retention setting
+- Mapping Collision sample/schema/scenario checks
+- Runtime source audit
+- Internal SHA-256 manifest
+- ZIP CRC and clean-extraction byte comparison
+
+Native Windows gates included but not run on Linux:
+- Native Windows PowerShell parser over all shipped sources
+- UI callback-scope AST test
+- Main and utility WPF regression tests
+- Log-maintenance execution tests
+- Mapping Collision engine execution
+- UI minimum-size containment
+- Governance and installed production OdmApi preflight
+- Live Quest, Active Directory, and Entra operations
+
+Final result and counts are recorded after package construction.
+
+Platform-neutral result: PASS
+Runtime source audit: PASS
+Mapping Collision Utility static validation: PASS
+UI callback-scope static validation: PASS
+Package files: 106
+Internal manifest entries: 105
+Changed/new file records from Preview 5: 25
+ZIP integrity and clean-extraction comparison: PASS after final archive generation

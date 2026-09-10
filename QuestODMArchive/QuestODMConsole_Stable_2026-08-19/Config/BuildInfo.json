@@ -1,0 +1,12 @@
+{
+  "ProductName": "Quest ODM Operations Console",
+  "Version": "1.1.0-preview.6",
+  "BuildDateUtc": "2026-08-17T17:50:00Z",
+  "BuildId": "V1.1-PREVIEW-20260817.6",
+  "ReleaseChannel": "Preview",
+  "SupportOwner": "Pellera Digital Workplace",
+  "SupportEmail": "",
+  "ValidatedOdmApiVersion": "2.1.396",
+  "SupportedHost": "Windows PowerShell 5.1 or PowerShell 7 x64 STA",
+  "Notice": "Unofficial integration utility. Preview 6 corrects detached UI callback scope after successful bulk operations, including Create collections and add users. It also retains Preview 5 Mapping Collision report corrections, Preview 4 theme/log-retention fixes, and all earlier functionality. It is not a Quest Software product and is not supported by Quest unless separately agreed."
+}

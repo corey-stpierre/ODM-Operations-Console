@@ -1,0 +1,32 @@
+# Normalize text while preserving Windows-compatible script line endings.
+* text=auto eol=lf
+
+*.ps1      text eol=crlf
+*.psm1     text eol=crlf
+*.psd1     text eol=crlf
+*.cmd      text eol=crlf
+*.bat      text eol=crlf
+*.xaml     text eol=crlf
+*.xml      text eol=crlf
+*.config   text eol=crlf
+*.csv      text eol=crlf
+*.txt      text eol=crlf
+
+*.md       text eol=lf
+*.json     text eol=lf
+*.yml      text eol=lf
+*.yaml     text eol=lf
+*.py       text eol=lf
+*.sha256   text eol=lf
+
+*.png      binary
+*.jpg      binary
+*.jpeg     binary
+*.gif      binary
+*.ico      binary
+*.dll      binary
+*.exe      binary
+*.zip      binary
+*.pdf      binary
+*.docx     binary
+*.xlsx     binary

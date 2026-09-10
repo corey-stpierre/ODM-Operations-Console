@@ -1,0 +1,57 @@
+name: Bug report
+description: Report a reproducible defect using sanitized information only.
+title: '[Bug] '
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: Do not include tokens, credentials, customer data, raw inventories, or unsanitized logs.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Value from VERSION.txt.
+      placeholder: 1.1.0-preview.6
+    validations:
+      required: true
+  - type: input
+    id: host
+    attributes:
+      label: PowerShell host
+      placeholder: Windows PowerShell 5.1 or PowerShell 7.x x64 STA
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Explain the defect and operational impact.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Use sanitized sample data.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Observed behavior
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Data-safety confirmation
+      options:
+        - label: I removed credentials, tokens, customer identifiers, and unsanitized logs.
+          required: true

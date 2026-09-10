@@ -1,0 +1,2 @@
+SourceUPN,TargetUPN,TargetDisplayName,TargetAlias,TargetPrimaryEmail,TargetFirstName,TargetLastName
+alex.wilber@source.contoso.com,alex.wilber@target.contoso.com,Alex Wilber,alex.wilber,alex.wilber@target.contoso.com,Alex,Wilber

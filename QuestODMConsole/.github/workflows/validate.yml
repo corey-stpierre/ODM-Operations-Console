@@ -1,0 +1,45 @@
+name: Validate source
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+      - 'fix/**'
+      - 'refactor/**'
+      - 'release/**'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validation:
+    runs-on: windows-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Run Python static validation
+        shell: pwsh
+        run: |
+          python .\Tests\StaticValidation.py
+          python .\Tests\RuntimeSourceAudit.py
+          python .\MappingCollisionUtility\Tests\StaticValidation.py
+
+      - name: Run non-interactive PowerShell validation
+        shell: powershell
+        run: |
+          .\Tests\Run-StaticValidation.ps1 -SkipWpfSmokeTest -SkipGovernanceTests
