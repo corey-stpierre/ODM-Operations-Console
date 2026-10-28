@@ -1,0 +1,85 @@
+TEAMS, SHAREPOINT, AND POWER BI - PREVIEW 7
+
+1. Extract the complete preview into a new directory. Launch the normal console.
+2. Connect and select the organization, project, and exact workload above the tabs.
+3. Open "Teams / SharePoint / Power BI" and click "Load workload options".
+4. Choose an object kind, load inventory, and export the grid to CSV.
+5. Fill CollectionName for each object. For task creation, also fill TaskName.
+   Keep the exported ObjectId, WorkloadId and ObjectKind values unchanged.
+6. Choose Collections or Collections and tasks. For tasks, select the task kind.
+7. Supply a saved Quest template ID for template migration tasks. For Power BI
+   tasks, supply the target administrator UPN. Review the settings shown.
+8. Choose the CSV and click Preview CSV. Review every row and the generated report.
+9. Enable changes in the header, check Execute changes locally, then Execute CSV.
+10. Review the result report. Inspect created tasks in Tasks before starting them.
+
+CSV CONTRACT
+Collections: CollectionName,ObjectId
+Tasks:      CollectionName,ObjectId,TaskName
+Optional exported guards: WorkloadId,ObjectKind
+
+ObjectId is Quest's ODM object ID from the inventory, not the Microsoft tenant
+object ID, site URL, or native Power BI workspace ID. The inventory shows native
+WorkspaceId separately. One task name must belong to one collection per file.
+Duplicate rows retain their report rows but are deduplicated for membership.
+Any invalid row blocks the entire input file before service writes.
+All rows use the selected task kind and settings. Use separate files/runs for
+different task kinds or templates. No task size limit is assumed by the console;
+split large waves to the limits and operating practice appropriate to Quest.
+
+SUPPORTED TASKS
+Teams: Provision teams; Collect team statistics; Migrate teams (template).
+Groups: Provision Microsoft 365 groups; Migrate groups (template).
+Chats: Migrate chats (template); objects are the discovered chat users in Quest.
+SharePoint: Discover contents; Migrate contents (template).
+Power BI workspaces: Provision workspaces; Migrate workspaces.
+Power BI gateways and connections: inventory/export/collections only in this preview.
+
+SETTINGS AND TEMPLATE RULES
+Template tasks validate the template's project/workload ownership and the type
+stored in its Values JSON. The preview report includes that JSON. Templates from
+another project, missing IDs, and mismatched types are rejected before writes.
+Quest's template constructor resets scheduling to Later. Template scheduling is
+not reused. These routes do not automatically discover, match, map, or provision
+prerequisites; complete prerequisites in Quest or the relevant earlier task first.
+
+Team provisioning explicitly uses createNew for teams/channels and the Migrated
+suffix. Group provisioning explicitly skips existing groups. Team statistics use
+basic/source statistics. SharePoint discovery disables form/workflow statistics.
+Other options for these direct task types retain the installed Quest defaults.
+
+Power BI provisioning explicitly skips conflicts, sets the supplied target admin
+if no admin is mapped, and adds source permissions. Power BI migration enables
+incremental synchronization, adds source content permissions, and uses priority
+100. These settings are shown in the UI and report. Review the resulting Quest
+task before starting it, especially its target permissions and synchronization.
+Power BI task creation passes typed workspace objects directly to Quest's Workspaces
+parameter; these commands do not expose TemplateId in the inspected API versions.
+
+RESULTS AND RETRIES
+PREVIEW: validated without service changes.
+INVALID/BLOCKED: correct the CSV; no rows in the file were submitted.
+VERIFIED: expected object memberships and requested task links were read back.
+SKIPPED_EXISTING: task name already exists; no collection/task changes for that group.
+REVIEW_REQUIRED: a write or verification failed after processing began. Earlier
+writes may have completed. Review CollectionId, TaskId, the phase/error, and Quest
+state before retrying. The operation is not transactional and does not roll back.
+
+The engine refreshes inventory for every CSV run. A rerun does not repair existing
+tasks: existing names are deliberately skipped, even if a prior task has incomplete
+membership. Correct/review that task in Quest before starting it. Reports are written
+before execution and updated after each group to preserve the operation record.
+Membership verification retries briefly for service indexing delay. A read failure
+or still-missing member is reported for review, never assumed successful.
+
+BOUNDARIES
+New tasks remain unscheduled and are never started by this workflow. Existing
+Tasks controls provide lifecycle/monitoring. No cross-project creation, matching,
+mapping, automatic migration execution, or Power BI gateway/connection migration
+is added in this increment. The legacy Users/Task Factory CSV flows remain account-
+oriented; use the new tab and its ObjectId CSV format for these workloads.
+
+API reference: installed Quest OdmApi 2.1.396 and 2.1.401 source/command metadata.
+Quest PowerShell guidance:
+https://support.quest.com/technical-documents/on-demand-migration/current/user-guide/37
+

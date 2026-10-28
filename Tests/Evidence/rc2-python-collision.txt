@@ -1,0 +1,7 @@
+MAPPING COLLISION STATIC VALIDATION: PASS
+ - Required files: 15
+ - XAML controls: 50
+ - UI control references: 47
+ - PowerShell lexical files: 7
+ - Collection-return cardinality regression guard: PASS
+ - Sample rows: 8/8

@@ -1,0 +1,53 @@
+--- Native static, mock, WPF, and governance validation ---
+STATIC VALIDATION: PASS
+  - Required V1 files checked: 44
+  - Version marker is 1.1.0-rc.2
+  - Native PowerShell parser files checked: 53
+  - XAML/UI controls checked: 273 names, 260 references; CSV action footers pinned; theme resources wired
+  - V1 JSON files parsed
+  - Parser regression tests passed
+  - Collection normalization tests passed
+  - V1 branding tests passed
+  - Log maintenance tests passed
+  - UI callback scope tests passed
+  - Mapping Collision Utility engine tests passed
+  - Content workload tests passed
+  - Mock engine tests passed
+  - Worker boundary tests passed
+  - V1 governance tests passed
+  - Active Directory WPF tests passed
+  - Operations Center WPF tests passed
+  - Content workload WPF tests passed
+  - WPF smoke test passed
+  - Mapping Collision Utility WPF smoke test passed
+  - UI initial-state tests passed
+  - Overview persistence tests passed
+--- Installed OdmApi preflight ---
+INSTALLED ODMAPI PREFLIGHT: PASS
+
+Status                 : PASS
+Installed              : True
+Loaded                 : True
+ModuleName             : OdmApi
+ModuleVersion          : 2.1.401
+ModulePath             : C:\Users\cstpi\OneDrive\Documents\PowerShell\Modules\OdmApi\2.1.401\OdmApi.psm1
+ManifestPath           : C:\Users\cstpi\OneDrive\Documents\PowerShell\Modules\OdmApi\2.1.401\OdmApi.psd1
+ConnectCommandOwner    : OdmApi
+PrivateFunctionPresent : True
+RuntimeProbeStatus     : PASS
+RuntimeProbeDetails    : Set-ModuleVersion completed successfully for OdmApi 2.1.401.
+Error                  : 
+ExceptionType          : 
+FullyQualifiedErrorId  : 
+ScriptStackTrace       : 
+TestedAt               : 10/28/2026 10:45:09 AM
+PowerShellVersion      : 7.6.9
+PowerShellEdition      : Core
+Is64BitProcess         : True
+
+V1 ACCEPTANCE: PASS
+OPERATIONS CENTER TESTS: PASS (181 available workload-command contracts; 5 blocked; module 2.1.401; no service calls)
+MANAGEMENT TESTS: PASS (native update, scheduling, templates, rename and acknowledgement; no service calls)
+AD command contracts: 20 actions, 27 inventories; no authentication or service calls.
+ACTIVE DIRECTORY TESTS: PASS
+RC ACCEPTANCE: PASS

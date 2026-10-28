@@ -1,12 +1,12 @@
 {
   "ProductName": "Quest ODM Operations Console",
-  "Version": "1.1.0-preview.6",
-  "BuildDateUtc": "2026-08-17T17:50:00Z",
-  "BuildId": "V1.1-PREVIEW-20260817.6",
-  "ReleaseChannel": "Preview",
+  "Version": "1.1.0-rc.2",
+  "BuildDateUtc": "2026-10-28T15:41:07.330763+00:00",
+  "BuildId": "V1.1-RC2-20261028",
+  "ReleaseChannel": "Release candidate",
   "SupportOwner": "Pellera Digital Workplace",
   "SupportEmail": "",
-  "ValidatedOdmApiVersion": "2.1.396",
+  "ValidatedOdmApiVersion": "2.1.401",
   "SupportedHost": "Windows PowerShell 5.1 or PowerShell 7 x64 STA",
-  "Notice": "Unofficial integration utility. Preview 6 corrects detached UI callback scope after successful bulk operations, including Create collections and add users. It also retains Preview 5 Mapping Collision report corrections, Preview 4 theme/log-retention fixes, and all earlier functionality. It is not a Quest Software product and is not supported by Quest unless separately agreed."
+  "Notice": "Unofficial integration utility. RC2 adds organization-scoped Active Directory/device workflows to the Microsoft 365 console. Offline validation is separate from live Quest acceptance. Unsigned; production approval pending. Not a Quest Software product."
 }

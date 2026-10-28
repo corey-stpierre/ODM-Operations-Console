@@ -1,4 +1,4 @@
-#using module OdmApi
+﻿#using module OdmApi
 
 param(
   [Parameter(Mandatory)] [string]$Region,

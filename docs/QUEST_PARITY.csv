@@ -1,0 +1,238 @@
+Area,Capability,Route,Status,LiveValidation
+Accounts,Address Rewriting,New-OdmAddressRewritingTask,Web handoff: immediate execution/fixed ID,NOT RUN
+Accounts,Calendar Sharing,New-OdmCalendarSharingTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Collect Account Statistics,New-OdmCollectAccountStatisticsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Collect Statistics,New-OdmCollectStatisticsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Discovery,New-OdmDiscoveryTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Desktop agent Customize User Notifications,New-OdmDuaCustomizeUserNotificationsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Desktop agent Export Devices,New-OdmDuaExportDevicesTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Desktop agent Export Installation Status,New-OdmDuaExportInstallationStatusTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Desktop agent Generate Token,New-OdmDuaGenerateTokenTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Desktop agent Mark As Complete,New-OdmDuaMarkAsCompleteTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Desktop agent Re Send Notification,New-OdmDuaReSendNotificationTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Desktop agent Revoke Token,New-OdmDuaRevokeTokenTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Desktop agent Switch Applications,New-OdmDuaSwitchApplicationsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Group Membership Migration,New-OdmGroupMembershipMigrationTask,Operations Center Create; availability depends on loaded module,NOT RUN
+HybridExchange,Hybrid Exchange Collect Statistics,New-OdmHeCollectStatisticsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+HybridExchange,Hybrid Exchange Import Permissions From File,New-OdmHeImportPermissionsFromFileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+HybridExchange,Hybrid Exchange Mailbox Matching From File,New-OdmHeMailboxMatchingFromFileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+HybridExchange,Hybrid Exchange Mailbox Switch,New-OdmHeMailboxSwitchTask,Operations Center Create; availability depends on loaded module,NOT RUN
+HybridExchange,Hybrid Exchange Mail Migration,New-OdmHeMailMigrationTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Mail Migration,New-OdmMailMigrationTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Mail Switch,New-OdmMailSwitchTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Mapping File,New-OdmMappingFileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Matching,New-OdmMatchingTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Meeting Link Migration,New-OdmMeetingLinkMigrationTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Migration,New-OdmMigrationTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,One Drive Migration,New-OdmOneDriveMigrationTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,One Drive Statistics,New-OdmOneDriveStatisticsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Assign Existing Connection Profile,New-OdmPbiAssignExistingConnectionProfileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Assign New Connection Profile,New-OdmPbiAssignNewConnectionProfileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Collect Statistics,New-OdmPbiCollectStatisticsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Create New Connection Profile,New-OdmPbiCreateNewConnectionProfileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Delete Connection Profiles,New-OdmPbiDeleteConnectionProfilesTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Discover All Contents,New-OdmPbiDiscoverAllContentsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Discover Connections,New-OdmPbiDiscoverConnectionsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Discover Gateways,New-OdmPbiDiscoverGatewaysTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Discover Workspaces,New-OdmPbiDiscoverWorkspacesTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Edit Connection Profile,New-OdmPbiEditConnectionProfileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Import Collections From File,New-OdmPbiImportCollectionsFromFileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Import Gateways Mapping,New-OdmPbiImportGatewaysMappingTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Map Workspaces From File,New-OdmPbiMapWorkspacesFromFileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Match Gateways,New-OdmPbiMatchGatewaysTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Migrate Connections,New-OdmPbiMigrateConnectionsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Migrate Workspaces,New-OdmPbiMigrateWorkspacesTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Provision Workspaces,New-OdmPbiProvisionWorkspacesTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Refresh Permissions,New-OdmPbiRefreshPermissionsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Reset Mapping,New-OdmPbiResetMappingTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Test Power BI Connection,New-OdmPbiTestPowerBIConnectionTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerBi,Power BI Validate Workspaces Migration Access,New-OdmPbiValidateWorkspacesMigrationAccessTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PublicFolders,Public folders Collect Statistics,New-OdmPfCollectStatisticsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PublicFolders,Public folders Content Migration,New-OdmPfContentMigrationTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PublicFolders,Public folders Discovery From File,New-OdmPfDiscoveryFromFileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PublicFolders,Public folders Discovery,New-OdmPfDiscoveryTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PublicFolders,Public folders Mapping From File,New-OdmPfMappingFromFileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PublicFolders,Public folders Migration,New-OdmPfMigrationTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PublicFolders,Public folders Provision,New-OdmPfProvisionTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Collect Statistics,New-OdmPPCollectStatisticsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Discover All Contents,New-OdmPPDiscoverAllContentsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Discover Apps,New-OdmPPDiscoverAppsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Discover Connections,New-OdmPPDiscoverConnectionsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Discover Dataflows,New-OdmPPDiscoverDataflowsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Discover Environments,New-OdmPPDiscoverEnvironmentsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Discover Flows,New-OdmPPDiscoverFlowsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Discover Solutions,New-OdmPPDiscoverSolutionsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Discover Target Connections,New-OdmPPDiscoverTargetConnectionsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Import Collections From File,New-OdmPPImportCollectionsFromFileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Match Connections From File,New-OdmPPMatchConnectionsFromFileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Migrate Environments,New-OdmPPMigrateEnvironmentsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Provision Environments,New-OdmPPProvisionEnvironmentsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Remediate Environments,New-OdmPPRemediateEnvironmentsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Reset Environments,New-OdmPPResetEnvironmentsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Set Solution Package Location From File,New-OdmPPSetSolutionPackageLocationFromFileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Set Sub Domain Name From File,New-OdmPPSetSubDomainNameFromFileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Set Target Billing Policy From File,New-OdmPPSetTargetBillingPolicyFromFileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Set Target Environment Group From File,New-OdmPPSetTargetEnvironmentGroupFromFileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Set Target Environment Name From File,New-OdmPPSetTargetEnvironmentNameFromFileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Test Power Platform Connection,New-OdmPPTestPowerPlatformConnectionTask,Operations Center Create; availability depends on loaded module,NOT RUN
+PowerPlatform,Power Platform Validate Environments,New-OdmPPValidateEnvironmentsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Refresh Selected,New-OdmRefreshSelectedTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Any,Reporting Error Logs Export,New-OdmReportingErrorLogsExportTask,Operations Center Create; availability depends on loaded module,NOT RUN
+SharePoint,Share Point Compare Share Point Content,New-OdmSPCompareSharePointContentTask,Operations Center Create; availability depends on loaded module,NOT RUN
+SharePoint,Share Point Discover Share Point Contents,New-OdmSPDiscoverSharePointContentsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+SharePoint,Share Point Discover Sites From File,New-OdmSPDiscoverSitesFromFileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+SharePoint,Share Point Discover Sites,New-OdmSPDiscoverSitesTask,Operations Center Create; availability depends on loaded module,NOT RUN
+SharePoint,Share Point Discover Term Store,New-OdmSPDiscoverTermStoreTask,Operations Center Create; availability depends on loaded module,NOT RUN
+SharePoint,Share Point Map List,New-OdmSPMapListTask,Web handoff: vendor constructor lacks explicit scheduling parameter,NOT RUN
+SharePoint,Share Point Mapping File,New-OdmSPMappingFileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+SharePoint,Share Point Mapping Geo Locations,New-OdmSPMappingGeoLocationsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+SharePoint,Share Point Map Site,New-OdmSPMapSiteTask,Web handoff: vendor constructor lacks explicit scheduling parameter,NOT RUN
+SharePoint,Share Point Map Term Store Geo Locations From File,New-OdmSPMapTermStoreGeoLocationsFromFileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+SharePoint,Share Point Map Web,New-OdmSPMapWebTask,Web handoff: vendor constructor lacks explicit scheduling parameter,NOT RUN
+SharePoint,Share Point Matching,New-OdmSPMatchingTask,Operations Center Create; availability depends on loaded module,NOT RUN
+SharePoint,Share Point Migrate List Items From File,New-OdmSPMigrateListItemsFromFileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+SharePoint,Share Point Migrate Permissions,New-OdmSPMigratePermissionsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+SharePoint,Share Point Migrate Term Store,New-OdmSPMigrateTermStoreTask,Operations Center Create; availability depends on loaded module,NOT RUN
+SharePoint,Share Point Migration,New-OdmSPMigrationTask,Operations Center Create; availability depends on loaded module,NOT RUN
+SharePoint,Share Point Remove Share Point Objects,New-OdmSPRemoveSharePointObjectsTask,Web handoff: vendor constructor lacks explicit scheduling parameter,NOT RUN
+Teams,Teams Chat Migration,New-OdmTeamsChatMigrationTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Teams,Teams Chats Discovery,New-OdmTeamsChatsDiscoveryTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Teams,Teams Collect Statistics,New-OdmTeamsCollectStatisticsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Teams,Teams Delete Groups,New-OdmTeamsDeleteGroupsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Teams,Teams Delete Teams,New-OdmTeamsDeleteTeamsTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Teams,Teams Discover,New-OdmTeamsDiscoverTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Teams,Teams Group Migration,New-OdmTeamsGroupMigrationTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Teams,Teams Groups Provision,New-OdmTeamsGroupsProvisionTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Teams,Teams Map From File,New-OdmTeamsMapFromFileTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Teams,Teams Migration,New-OdmTeamsMigrationTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Teams,Teams New Recreate Conversation History Link,New-OdmTeamsNewRecreateConversationHistoryLinkTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Teams,Teams Provision,New-OdmTeamsProvisionTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Teams,Teams Rename And Map,New-OdmTeamsRenameAndMapTask,Operations Center Create; availability depends on loaded module,NOT RUN
+Accounts,Update: Calendar Sharing,Set-OdmCalendarSharingTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: Collect Account Statistics,Set-OdmCollectAccountStatisticsTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: Collect Statistics,Set-OdmCollectStatisticsTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: Discovery,Set-OdmDiscoveryTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: Desktop agent Customize User Notifications,Set-OdmDuaCustomizeUserNotificationsTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: Desktop agent Export Devices,Set-OdmDuaExportDevicesTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: Desktop agent Export Installation Status,Set-OdmDuaExportInstallationStatusTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: Desktop agent Generate Token,Set-OdmDuaGenerateTokenTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: Desktop agent Mark As Complete,Set-OdmDuaMarkAsCompleteTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: Desktop agent Re Send Notification,Set-OdmDuaReSendNotificationTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: Desktop agent Revoke Token,Set-OdmDuaRevokeTokenTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: Desktop agent Switch Applications,Set-OdmDuaSwitchApplicationsTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: Group Membership Migration,Set-OdmGroupMembershipMigrationTask,Operations Center Update; availability depends on loaded module,NOT RUN
+HybridExchange,Update: Hybrid Exchange Collect Statistics,Set-OdmHeCollectStatisticsTask,Operations Center Update; availability depends on loaded module,NOT RUN
+HybridExchange,Update: Hybrid Exchange Import Permissions From File,Set-OdmHeImportPermissionsFromFileTask,Operations Center Update; availability depends on loaded module,NOT RUN
+HybridExchange,Update: Hybrid Exchange Mailbox Matching From File,Set-OdmHeMailboxMatchingFromFileTask,Operations Center Update; availability depends on loaded module,NOT RUN
+HybridExchange,Update: Hybrid Exchange Mailbox Switch,Set-OdmHeMailboxSwitchTask,Operations Center Update; availability depends on loaded module,NOT RUN
+HybridExchange,Update: Hybrid Exchange Mail Migration,Set-OdmHeMailMigrationTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: Mail Migration,Set-OdmMailMigrationTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: Mail Switch,Set-OdmMailSwitchTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: Mapping File,Set-OdmMappingFileTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: Matching,Set-OdmMatchingTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: Meeting Link Migration,Set-OdmMeetingLinkMigrationTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: Migration,Set-OdmMigrationTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: One Drive Migration,Set-OdmOneDriveMigrationTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: One Drive Statistics,Set-OdmOneDriveStatisticsTask,Operations Center Update; availability depends on loaded module,NOT RUN
+PublicFolders,Update: Public folders Collect Statistics,Set-OdmPfCollectStatisticsTask,Operations Center Update; availability depends on loaded module,NOT RUN
+PublicFolders,Update: Public folders Content Migration,Set-OdmPfContentMigrationTask,Operations Center Update; availability depends on loaded module,NOT RUN
+PublicFolders,Update: Public folders Discovery From File,Set-OdmPfDiscoveryFromFileTask,Operations Center Update; availability depends on loaded module,NOT RUN
+PublicFolders,Update: Public folders Discovery,Set-OdmPfDiscoveryTask,Operations Center Update; availability depends on loaded module,NOT RUN
+PublicFolders,Update: Public folders Mapping From File,Set-OdmPfMappingFromFileTask,Operations Center Update; availability depends on loaded module,NOT RUN
+PublicFolders,Update: Public folders Migration,Set-OdmPfMigrationTask,Operations Center Update; availability depends on loaded module,NOT RUN
+PublicFolders,Update: Public folders Provision,Set-OdmPfProvisionTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Accounts,Update: Refresh Selected,Set-OdmRefreshSelectedTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Any,Update: Reporting Error Logs Export,Set-OdmReportingErrorLogsExportTask,Operations Center Update; availability depends on loaded module,NOT RUN
+SharePoint,Update: Share Point Compare Share Point Content,Set-OdmSPCompareSharePointContentTask,Operations Center Update; availability depends on loaded module,NOT RUN
+SharePoint,Update: Share Point Discover Share Point Contents,Set-OdmSPDiscoverSharePointContentsTask,Operations Center Update; availability depends on loaded module,NOT RUN
+SharePoint,Update: Share Point Discover Sites From File,Set-OdmSPDiscoverSitesFromFileTask,Operations Center Update; availability depends on loaded module,NOT RUN
+SharePoint,Update: Share Point Discover Sites,Set-OdmSPDiscoverSitesTask,Operations Center Update; availability depends on loaded module,NOT RUN
+SharePoint,Update: Share Point Discover Term Store,Set-OdmSPDiscoverTermStoreTask,Operations Center Update; availability depends on loaded module,NOT RUN
+SharePoint,Update: Share Point Map List,Set-OdmSPMapListTask,Operations Center Update; availability depends on loaded module,NOT RUN
+SharePoint,Update: Share Point Mapping File,Set-OdmSPMappingFileTask,Operations Center Update; availability depends on loaded module,NOT RUN
+SharePoint,Update: Share Point Mapping Geo Locations,Set-OdmSPMappingGeoLocationsTask,Operations Center Update; availability depends on loaded module,NOT RUN
+SharePoint,Update: Share Point Map Site,Set-OdmSPMapSiteTask,Operations Center Update; availability depends on loaded module,NOT RUN
+SharePoint,Update: Share Point Map Term Store Geo Locations From File,Set-OdmSPMapTermStoreGeoLocationsFromFileTask,Operations Center Update; availability depends on loaded module,NOT RUN
+SharePoint,Update: Share Point Map Web,Set-OdmSPMapWebTask,Operations Center Update; availability depends on loaded module,NOT RUN
+SharePoint,Update: Share Point Matching,Set-OdmSPMatchingTask,Operations Center Update; availability depends on loaded module,NOT RUN
+SharePoint,Update: Share Point Migrate List Items From File,Set-OdmSPMigrateListItemsFromFileTask,Operations Center Update; availability depends on loaded module,NOT RUN
+SharePoint,Update: Share Point Migrate Permissions,Set-OdmSPMigratePermissionsTask,Operations Center Update; availability depends on loaded module,NOT RUN
+SharePoint,Update: Share Point Migrate Term Store,Set-OdmSPMigrateTermStoreTask,Operations Center Update; availability depends on loaded module,NOT RUN
+SharePoint,Update: Share Point Migration,Set-OdmSPMigrationTask,Operations Center Update; availability depends on loaded module,NOT RUN
+SharePoint,Update: Share Point Remove Share Point Objects,Set-OdmSPRemoveSharePointObjectsTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Teams,Update: Teams Chat Migration,Set-OdmTeamsChatMigrationTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Teams,Update: Teams Chats Discovery,Set-OdmTeamsChatsDiscoveryTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Teams,Update: Teams Collect Statistics,Set-OdmTeamsCollectStatisticsTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Teams,Update: Teams Delete Groups,Set-OdmTeamsDeleteGroupsTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Teams,Update: Teams Delete Teams,Set-OdmTeamsDeleteTeamsTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Teams,Update: Teams Discover,Set-OdmTeamsDiscoverTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Teams,Update: Teams Group Migration,Set-OdmTeamsGroupMigrationTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Teams,Update: Teams Groups Provision,Set-OdmTeamsGroupsProvisionTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Teams,Update: Teams Map From File,Set-OdmTeamsMapFromFileTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Teams,Update: Teams Migration,Set-OdmTeamsMigrationTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Teams,Update: Teams New Recreate Conversation History Link,Set-OdmTeamsNewRecreateConversationHistoryLinkTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Teams,Update: Teams Provision,Set-OdmTeamsProvisionTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Teams,Update: Teams Rename And Map,Set-OdmTeamsRenameAndMapTask,Operations Center Update; availability depends on loaded module,NOT RUN
+Shared management,Collection rename,Set-OdmCollection,Native management form; preview then apply,NOT RUN
+Shared management,Save task template,New-OdmTaskTemplate,Native management form; preview then apply,NOT RUN
+Shared management,Template import,Import-OdmTaskTemplate,Native management form; preview then apply,NOT RUN
+Shared management,Template export,Export-OdmTaskTemplate,Native management form; preview then apply,NOT RUN
+Shared management,Acknowledge event,Set-OdmEventAcknowledged,Native management form; preview then apply,NOT RUN
+Shared management,Report metadata listing (up to 1000),Get-OdmReportInfo,Native management form; preview then apply,NOT RUN
+Administration and shared,Organization/project administration,Quest web console,Web handoff; no native parity claim,NOT RUN
+Administration and shared,Tenant onboarding and consent,Quest web console,Web handoff; no native parity claim,NOT RUN
+Administration and shared,RBAC and subscriptions/licenses,Quest web console,Web handoff; no native parity claim,NOT RUN
+Administration and shared,Full report-file downloads,Quest web console,Web handoff; no native parity claim,NOT RUN
+Administration and shared,Wizard-only settings and dashboards,Quest web console,Web handoff; no native parity claim,NOT RUN
+Active Directory,Devices,Get-OdmAdDevice,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Actions,Get-OdmAdDeviceAction,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Agent configuration (keys hidden),Get-OdmAdDeviceAgentConfig,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Credentials,Get-OdmAdDeviceCredential,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Credential Cache Profiles,Get-OdmAdDeviceCredentialCacheProfile,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Data repositories,Get-OdmAdDeviceDataRepository,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,EntraID Join Profiles,Get-OdmAdDeviceEntraIDJoinProfile,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,File Shares,Get-OdmAdDeviceFileShare,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Global Variables,Get-OdmAdDeviceGlobalVariable,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Interactive Profiles,Get-OdmAdDeviceInteractiveProfile,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Device Jobs,Get-OdmAdDeviceJob,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Migration Profiles,Get-OdmAdDeviceMigrationProfile,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Migration Waves,Get-OdmAdDeviceMigrationWave,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Network Profiles,Get-OdmadDeviceNetworkProfile,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,ReACL Profiles,Get-OdmAdDeviceReACLProfile,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Share ReACL Profiles,Get-OdmAdDeviceShareReACLProfile,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Tasks,Get-OdmAdDeviceTask,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Directory Objects,Get-OdmADDirectoryObject,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Environments,Get-OdmAdEnvironment,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Exchange Environments,Get-OdmAdExEnvironment,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Exchange Service Accounts,Get-OdmAdExServiceAccount,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Service Accounts,Get-OdmAdServiceAccount,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Workflows,Get-OdmAdWorkflow,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Workflow Logs,Get-OdmAdWorkflowLog,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Workflow Runs,Get-OdmAdWorkflowRun,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Self Service Devices,Get-ODMSSDevice,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Self Service Users,Get-ODMSSDeviceUser,Native bounded inventory; secrets hidden; live acceptance pending,NOT RUN
+Active Directory,Device Scheduled (Remove),Remove-ODMSSDeviceScheduled,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Device User Scheduled (Remove),Remove-ODMSSDeviceUserScheduled,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Device (Set),Set-OdmAdDevice,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Device Interactive Profile (Set),Set-OdmAdDeviceInteractiveProfile,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Device ReACL Profile (Set),Set-OdmAdDeviceReACLProfile,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Device Self Migration (Set),Set-ODMSSDeviceSelfMigration,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Device User Self Migration (Set),Set-ODMSSDeviceUserSelfMigration,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Device Cache Credentials (Start),Start-OdmAdDeviceCacheCredentials,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Device Cleanup (Start),Start-OdmAdDeviceCleanup,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Device Custom Action (Start),Start-OdmAdDeviceCustomAction,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Device Cutover (Start),Start-OdmAdDeviceCutover,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Device Discovery (Start),Start-OdmAdDeviceDiscovery,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Device EntraID Cutover (Start),Start-OdmAdDeviceEntraIDCutover,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Device File Share Cleanup (Start),Start-OdmAdDeviceFileShareCleanup,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Device File Share ReACL (Start),Start-OdmAdDeviceFileShareReACL,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Device File Share ReACL Rollback (Start),Start-OdmAdDeviceFileShareReACLRollback,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Device Offline Domain Join (Start),Start-OdmAdDeviceOfflineDomainJoin,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Device ReACL (Start),Start-OdmAdDeviceReACL,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Workflow (Start),Start-OdmAdWorkflow,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Device Migrate Now (Start),Start-ODMSSDeviceMigrateNow,Native action form; exact targets and preview; immediate effects possible,NOT RUN
+Active Directory,Environment/project and workflow design,Quest web console,Web handoff; no native parity claim,NOT RUN
+Active Directory,Agent deployment and registration,Quest web console,Web handoff; no native parity claim,NOT RUN
+Active Directory,"New profiles, credentials, waves and file shares",Quest web console,Web handoff; no native parity claim,NOT RUN
+Active Directory,Self-service templates and SelfServiceProfile assignment,Quest web console,Web handoff; no native parity claim,NOT RUN
+Active Directory,Unexported job controls and vendor dashboards,Quest web console,Web handoff; no native parity claim,NOT RUN

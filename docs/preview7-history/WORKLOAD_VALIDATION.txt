@@ -1,0 +1,44 @@
+PREVIEW 7 VALIDATION - 2026-10-15
+
+PASS
+- All ten CSV task creation routes using the offline OdmApi mock.
+- Feature engine tests on Windows PowerShell 5.1 and PowerShell 7.
+- Workload-specific object filtering and typed membership verification.
+- Whole-file rejection of invalid IDs, cross-kind IDs, stale workload IDs,
+  inconsistent task/collection names, and invalid/foreign migration templates.
+- Safe Mode, duplicate memberships, held tasks, rerun skip behavior, and
+  partial-write reports retaining created collection IDs.
+- WPF content-tab controller, context reset, local/global write gates, busy state,
+  task-kind selection, preview/execute dispatch, and single-row result rendering.
+- Native PowerShell parsing, lexical/static validation, and runtime source audit.
+- Installed Quest command parameter/default-value contracts: 2.1.396 and 2.1.401.
+- Installed OdmApi 2.1.396 preflight without authentication/service operations.
+- Mapping Collision Utility static checks and existing engine tests.
+
+FULL ACCEPTANCE: FAIL - EXISTING BASELINE FAILURES
+These same failures were reproduced on the untouched F:\GitHub\ODM-Operations-Console
+Preview 6 baseline and on the Preview 7 copy:
+1. Log maintenance: expired active bootstrap log was not reset.
+2. Mock engine: empty organization response fallback assertion.
+3. Governance/readiness: an empty List argument is rejected by the record helper.
+4. Main WPF smoke test: SurfaceBrush unexpectedly frozen.
+5. Mapping Collision WPF smoke test: SurfaceBrush unexpectedly frozen.
+6. UI initial-state test: imported Assert-UiSelectionCardinalityContract unavailable.
+7. Overview persistence test: imported Set-OverviewSnapshot unavailable.
+
+The new content engine and WPF tests pass within the full runner. These results
+do not certify the full application: baseline failures still need diagnosis/fixes
+before a production release. No full-acceptance pass is claimed.
+
+LIVE VALIDATION: NOT RUN
+No real Quest authentication, collections, task creation, membership updates, or
+migration runs were performed. Test the preview against an approved Quest project
+before operational use. First validate inventory/CSV previews, then one small
+collection and one held task per workload, inspect settings and membership in Quest,
+and separately approve any migration start. Power BI gateways/connections have no
+new task creation route in this preview.
+
+SOURCE
+Prepared from the local Preview 6 source at F:\GitHub\ODM-Operations-Console.
+Work was made in a separate workspace copy. Synced project sources were not edited.
+The ZIP is a source/development preview, not a signed production release.

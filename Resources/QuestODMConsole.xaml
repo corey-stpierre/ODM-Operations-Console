@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
         x:Name="QuestOdmWindow"
-        Title="Quest ODM Operations Console 1.1.0 Preview 6"
+        Title="Quest ODM Operations Console 1.1.0 RC 1"
         Width="1440" Height="920" MinWidth="1180" MinHeight="760"
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource BackgroundBrush}" Foreground="{DynamicResource TextBrush}"
@@ -78,6 +78,24 @@
             <Setter Property="CaretBrush" Value="{DynamicResource TextBrush}" />
             <Setter Property="SelectionBrush" Value="{DynamicResource SelectionBrush}" />
         </Style>
+        <Style TargetType="PasswordBox">
+            <Setter Property="MinHeight" Value="32"/><Setter Property="Padding" Value="8,5"/>
+            <Setter Property="Background" Value="{DynamicResource InputSurfaceBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+        </Style>
+        <ControlTemplate x:Key="ThemedChoiceTemplate" TargetType="ComboBox">
+            <Grid>
+                <ToggleButton Focusable="False" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" Foreground="{TemplateBinding Foreground}">
+                    <ToggleButton.Template><ControlTemplate TargetType="ToggleButton"><Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="3"><Grid><Path Data="M 0 0 L 4 4 L 8 0" Stroke="{TemplateBinding Foreground}" StrokeThickness="1.5" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0"/></Grid></Border></ControlTemplate></ToggleButton.Template>
+                </ToggleButton>
+                <ContentPresenter Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" IsHitTestVisible="False" Margin="8,4,26,4" VerticalAlignment="Center"/>
+                <Popup x:Name="PART_Popup" IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade">
+                    <Border Background="{DynamicResource InputSurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}" MaxHeight="320"><ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto"><ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained"/></ScrollViewer></Border>
+                </Popup>
+            </Grid>
+            <ControlTemplate.Triggers><Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.55"/></Trigger></ControlTemplate.Triggers>
+        </ControlTemplate>
         <Style TargetType="ComboBox">
             <Setter Property="MinHeight" Value="32" />
             <Setter Property="Padding" Value="6,3" />
@@ -85,6 +103,7 @@
             <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
             <Setter Property="Background" Value="{DynamicResource InputSurfaceBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+            <Style.Triggers><Trigger Property="IsEditable" Value="False"><Setter Property="Template" Value="{StaticResource ThemedChoiceTemplate}"/></Trigger></Style.Triggers>
         </Style>
         <Style TargetType="ComboBoxItem">
             <Setter Property="Background" Value="{DynamicResource InputSurfaceBrush}" />
@@ -298,8 +317,8 @@
                            RenderOptions.BitmapScalingMode="HighQuality" />
                 </Grid>
                 <StackPanel Grid.Column="1" Margin="14,0,20,0" VerticalAlignment="Center">
-                    <TextBlock Text="Quest ODM Operations Console" FontSize="24" FontWeight="SemiBold" Foreground="{DynamicResource HeadingBrush}" />
-                    <TextBlock Text="Organization, workload, object, collection, and task administration" Foreground="{DynamicResource MutedBrush}" Margin="0,3,0,0" />
+                    <TextBlock Text="Quest ODM Operations Console" TextTrimming="CharacterEllipsis" ToolTip="Quest ODM Operations Console" FontSize="24" FontWeight="SemiBold" Foreground="{DynamicResource HeadingBrush}" />
+                    <TextBlock Text="Organization, workload, object, collection, and task administration" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource MutedBrush}" Margin="0,3,0,0" />
                 </StackPanel>
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                     <Border x:Name="SafeModeStatusBorder" Background="{DynamicResource WarningLightBrush}" BorderBrush="{DynamicResource WarningBorderBrush}" BorderThickness="1" CornerRadius="14" Padding="11,6" Margin="0,0,10,0" ToolTip="Safe Mode blocks Quest and local write operations. It resets whenever the active Quest context changes.">
@@ -465,7 +484,7 @@
 
             <TabItem Header="Tasks">
                 <Grid Margin="0,12,0,0">
-                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="2*" /><RowDefinition Height="Auto" /><RowDefinition Height="2*" /></Grid.RowDefinitions>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="2*" /><RowDefinition Height="Auto" /><RowDefinition Height="2*" MinHeight="200" /></Grid.RowDefinitions>
                     <Border Grid.Row="0" Style="{StaticResource CardStyle}" Padding="12">
                         <Grid>
                             <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="180" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
@@ -556,7 +575,7 @@
 
             <TabItem Header="Collections">
                 <Grid Margin="0,12,0,0">
-                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="2*" /><RowDefinition Height="Auto" /><RowDefinition Height="2*" /></Grid.RowDefinitions>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="2*" /><RowDefinition Height="Auto" /><RowDefinition Height="2*" MinHeight="200" /></Grid.RowDefinitions>
                     <Border Grid.Row="0" Style="{StaticResource CardStyle}" Padding="12">
                         <Grid>
                             <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="230" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
@@ -775,6 +794,55 @@
                 </Grid>
             </TabItem>
 
+            <TabItem Header="Teams / SharePoint / Power BI">
+                <Grid Margin="0,12,0,0">
+                    <Grid.RowDefinitions><RowDefinition Height="Auto" MaxHeight="340" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <Border Style="{StaticResource CardStyle}">
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="*" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                <StackPanel Margin="0,0,12,0">
+                                    <TextBlock Text="Workload objects" FontSize="16" FontWeight="SemiBold" />
+                                    <TextBlock Text="Open the workload above, then load its options. Existing task monitoring and start/stop actions are on Tasks." TextWrapping="Wrap" Margin="0,6,0,6" />
+                                    <Button x:Name="ContentLoadOptionsButton" Content="Load workload options" Style="{StaticResource SecondaryButtonStyle}" IsEnabled="False" />
+                                    <Label Content="Object kind" /><ComboBox x:Name="ContentObjectKindCombo" />
+                                    <WrapPanel Margin="0,8,0,0">
+                                        <Button x:Name="ContentInventoryButton" Content="Load inventory" Style="{StaticResource SecondaryButtonStyle}" IsEnabled="False" />
+                                        <Button x:Name="ContentExportButton" Content="Export grid to CSV" Style="{StaticResource GhostButtonStyle}" />
+                                    </WrapPanel>
+                                    <TextBlock Text="Inventory exports include ObjectId, WorkloadId and ObjectKind. Fill CollectionName and TaskName to use the export as input." TextWrapping="Wrap" Margin="0,8,0,0" Foreground="{DynamicResource MutedBrush}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="0,0,12,0">
+                                    <Label Content="CSV action" /><ComboBox x:Name="ContentActionCombo"><ComboBoxItem Content="Create / populate collections" Tag="Collections" IsSelected="True" /><ComboBoxItem Content="Create collections and tasks" Tag="Tasks" /></ComboBox>
+                                    <Label Content="CSV path" />
+                                    <DockPanel><Button x:Name="ContentBrowseButton" Content="Browse" DockPanel.Dock="Right" Style="{StaticResource GhostButtonStyle}" /><TextBox x:Name="ContentCsvPathBox" /></DockPanel>
+                                    <Label Content="Task kind" /><ComboBox x:Name="ContentTaskKindCombo" DisplayMemberPath="Name" SelectedValuePath="Key" />
+                                    <Label Content="Migration template ID (template tasks only)" /><TextBox x:Name="ContentTemplateBox" />
+                                    <Label Content="Target administrator UPN (Power BI tasks)" /><TextBox x:Name="ContentAdminBox" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Creation settings" FontSize="16" FontWeight="SemiBold" />
+                                    <TextBlock x:Name="ContentSettingsText" Text="Load workload options to begin." TextWrapping="Wrap" Margin="0,6,0,8" />
+                                    <CheckBox x:Name="ContentLinkCheckBox" Content="Link created tasks to collections" IsChecked="True" />
+                                    <CheckBox x:Name="ContentExecuteCheckBox" Content="Execute changes" />
+                                    <WrapPanel Margin="0,8,0,0">
+                                        <Button x:Name="ContentPreviewButton" Content="Preview CSV" Style="{StaticResource SecondaryButtonStyle}" IsEnabled="False" />
+                                        <Button x:Name="ContentExecuteButton" Content="Execute CSV" Style="{StaticResource PrimaryButtonStyle}" IsEnabled="False" />
+                                    </WrapPanel>
+                                    <TextBlock Text="Tasks are created for later review and are not started. Reports use the Bulk Operations report directory. Existing task names are skipped." TextWrapping="Wrap" Foreground="{DynamicResource MutedBrush}" Margin="0,8,0,0" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </ScrollViewer>
+                    <Border Grid.Row="1" Style="{StaticResource CardStyle}" Margin="0">
+                        <Grid><Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                            <TextBlock x:Name="ContentStatusText" Text="Select a Teams, SharePoint, or Power BI workload above." TextWrapping="Wrap" Margin="0,0,0,8" />
+                            <DataGrid x:Name="ContentResultsGrid" Grid.Row="1" />
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
             <TabItem Header="Diagnostics">
                 <Grid Margin="0,12,0,0">
                     <Grid.ColumnDefinitions><ColumnDefinition Width="3*" /><ColumnDefinition Width="2*" /></Grid.ColumnDefinitions>
@@ -891,6 +959,99 @@
                     </TabControl>
                 </Grid>
             </TabItem>
+            <TabItem Header="Operations Center">
+                <Grid Margin="0,10,0,0" TextElement.Foreground="{DynamicResource TextBrush}">
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                    <WrapPanel><Button x:Name="OperationsLoadButton" Content="Load workload operations" Style="{StaticResource SecondaryButtonStyle}"/><ComboBox x:Name="OperationsCommandCombo" Width="420" DisplayMemberPath="Name" SelectedValuePath="Command" ToolTip="Task types supported by the loaded Quest module for the selected workload."/></WrapPanel>
+                    <TextBlock x:Name="OperationsDescriptionText" Grid.Row="1" Text="Select a workload, then load its supported operations. Use Guides for CSV formats and prerequisites." TextWrapping="Wrap" Margin="0,8"/>
+                    <TabControl Grid.Row="2">
+                        <TabItem Header="Task settings and preview">
+                            <Grid Margin="8" TextElement.Foreground="{DynamicResource TextBrush}"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
+                                    <TextBlock Text="Fill required fields and any settings you want to override. Blank optional fields use Quest defaults for creation and preserve existing settings for updates." TextWrapping="Wrap" Margin="0,0,0,10"/>
+                                    <StackPanel x:Name="OperationsFieldsPanel"/>
+                                    <TextBlock Text="Task member IDs (optional, supported operations only)" FontWeight="SemiBold"/>
+                                    <TextBox x:Name="OperationsMemberIdsBox" MinHeight="50" AcceptsReturn="True" TextWrapping="Wrap" ToolTip="Exact Quest IDs separated by commas. Use Inventory to select and copy IDs. Typed object fields above take their own IDs."/>
+                                </StackPanel></ScrollViewer>
+                                <Grid Grid.Column="2"><Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                    <TextBox x:Name="OperationsResultBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="Preview details and operation reports appear here. Preview expires after 15 minutes and any input change."/>
+                                    <CheckBox x:Name="OperationsScopeCheckBox" Grid.Row="1" Margin="0,8"><TextBlock Text="I reviewed the scope and defaults. Omitted selectors may apply to the whole workload." TextWrapping="Wrap"/></CheckBox>
+                                    <CheckBox x:Name="OperationsExecuteCheckBox" Grid.Row="2" Content="Enable this previewed operation" Margin="0,6"/>
+                                    <WrapPanel Grid.Row="3"><Button x:Name="OperationsPreviewButton" Content="Preview and validate" Style="{StaticResource SecondaryButtonStyle}"/><Button x:Name="OperationsCreateButton" Content="Create held task" Style="{StaticResource PrimaryButtonStyle}"/></WrapPanel>
+                                </Grid>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Inventory and object IDs"><Grid Margin="8" TextElement.Foreground="{DynamicResource TextBrush}"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                            <WrapPanel><ComboBox x:Name="OperationsInventoryKindCombo" Width="170"/><Button x:Name="OperationsInventoryButton" Content="Load inventory" Style="{StaticResource SecondaryButtonStyle}"/><Button x:Name="OperationsUseIdsButton" Content="Copy selected IDs / use as members" Style="{StaticResource GhostButtonStyle}"/><Button x:Name="OperationsExportButton" Content="Export CSV" Style="{StaticResource GhostButtonStyle}"/></WrapPanel>
+                            <DataGrid x:Name="OperationsInventoryGrid" Grid.Row="1" SelectionMode="Extended"/>
+                        </Grid></TabItem>
+                        <TabItem Header="Templates, reports and management">
+                            <Grid Margin="8" TextElement.Foreground="{DynamicResource TextBrush}"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="16"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                                    <WrapPanel><ComboBox x:Name="ManagementKindCombo" Width="150"/><Button x:Name="ManagementLoadButton" Content="Load inventory" Style="{StaticResource SecondaryButtonStyle}"/></WrapPanel>
+                                    <DataGrid x:Name="ManagementGrid" Grid.Row="1" SelectionMode="Single"/>
+                                </Grid>
+                                <Grid Grid.Column="2"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                    <StackPanel>
+                                        <ComboBox x:Name="ManagementActionCombo" DisplayMemberPath="Name" SelectedValuePath="Key"/>
+                                        <TextBlock Text="Exact ID (select an inventory row or paste the ID)" Margin="0,6,0,0"/>
+                                        <TextBox x:Name="ManagementIdBox"/>
+                                        <TextBlock Text="New collection / template name (when needed)"/>
+                                        <TextBox x:Name="ManagementNameBox"/>
+                                        <TextBlock Text="Template import file (when needed)"/>
+                                        <DockPanel><Button x:Name="ManagementBrowseButton" DockPanel.Dock="Right" Content="Browse" Style="{StaticResource GhostButtonStyle}"/><TextBox x:Name="ManagementFileBox"/></DockPanel>
+                                    </StackPanel>
+                                    <TextBox x:Name="ManagementResultBox" Grid.Row="1" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0,8" Text="Preview before applying. Reports list the parent project's report links; use Quest web console to download report files."/>
+                                    <StackPanel Grid.Row="2"><CheckBox x:Name="ManagementExecuteCheckBox" Content="Enable this previewed action"/><WrapPanel><Button x:Name="ManagementPreviewButton" Content="Preview" Style="{StaticResource SecondaryButtonStyle}"/><Button x:Name="ManagementApplyButton" Content="Apply" Style="{StaticResource PrimaryButtonStyle}"/></WrapPanel></StackPanel>
+                                </Grid>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Active Directory">
+                <Grid Margin="0,8,0,0" TextElement.Foreground="{DynamicResource TextBrush}">
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                    <WrapPanel><Button x:Name="AdOpenButton" Content="Open Active Directory workspace" Style="{StaticResource SecondaryButtonStyle}"/><Button x:Name="AdPortalButton" Content="Quest setup / web console" Style="{StaticResource GhostButtonStyle}"/></WrapPanel>
+                    <TextBlock x:Name="AdDescriptionText" Grid.Row="1" TextWrapping="Wrap" Margin="0,6"/>
+                    <TabControl x:Name="AdTabs" Grid.Row="2">
+                        <TabItem Header="Inventory and monitoring">
+                            <Grid Margin="8" TextElement.Foreground="{DynamicResource TextBrush}"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="3*"/><RowDefinition Height="2*"/></Grid.RowDefinitions>
+                                <WrapPanel><ComboBox x:Name="AdInventoryKindCombo" Width="230" DisplayMemberPath="Name"/><Button x:Name="AdLoadButton" Content="Load inventory" Style="{StaticResource SecondaryButtonStyle}"/><Button x:Name="AdCopyButton" Content="Copy IDs / use for matching action" Style="{StaticResource GhostButtonStyle}"/><Button x:Name="AdExportButton" Content="Export CSV" Style="{StaticResource GhostButtonStyle}"/></WrapPanel>
+                                <WrapPanel Grid.Row="1" Margin="0,6"><StackPanel><TextBlock Text="Exact ID (optional)"/><TextBox x:Name="AdIdBox" Width="190"/></StackPanel><StackPanel><TextBlock Text="Parent ID (jobs / logs)"/><TextBox x:Name="AdParentIdBox" Width="160"/></StackPanel><StackPanel><TextBlock Text="Vendor filter / self-service search"/><TextBox x:Name="AdFilterBox" Width="260" ToolTip="Quest's native Filter syntax; self-service uses SearchQuery. No local PowerShell expressions are evaluated."/></StackPanel><StackPanel><TextBlock Text="Limit (1-100000)"/><TextBox x:Name="AdLimitBox" Width="110" Text="1000"/></StackPanel></WrapPanel>
+                                <DataGrid x:Name="AdGrid" Grid.Row="2" SelectionMode="Extended" AutoGenerateColumns="False"><DataGrid.Columns><DataGridTextColumn Header="ID" Binding="{Binding TargetId}" Width="130"/><DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" MinWidth="260"/><DataGridTextColumn Header="Environment" Binding="{Binding EnvironmentId}" Width="120"/><DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="160"/></DataGrid.Columns></DataGrid>
+                                <TextBox x:Name="AdDetailsBox" Grid.Row="3" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0,6,0,0"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Actions and preview">
+                            <Grid Margin="8" TextElement.Foreground="{DynamicResource TextBrush}"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
+                                    <TextBlock Text="Choose an action. Configure environments, agents and new profiles in Quest first." TextWrapping="Wrap"/>
+                                    <ComboBox x:Name="AdCommandCombo" DisplayMemberPath="Name" Margin="0,6"/>
+                                    <TextBlock Text="Exact target IDs (one per line or comma separated)" TextWrapping="Wrap"/>
+                                    <TextBox x:Name="AdTargetIdsBox" MinHeight="55" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                                    <TextBlock Text="Or a CSV: OrganizationId,TargetId; optional EnvironmentId and Kind" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                                    <DockPanel><Button x:Name="AdBrowseButton" DockPanel.Dock="Right" Content="Browse" Style="{StaticResource GhostButtonStyle}"/><TextBox x:Name="AdCsvBox"/></DockPanel>
+                                    <StackPanel x:Name="AdFieldsPanel" Margin="0,10,0,0"/>
+                                </StackPanel></ScrollViewer>
+                                <Grid Grid.Column="2"><Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                    <TextBox x:Name="AdResultBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                                    <CheckBox x:Name="AdExecuteCheckBox" Grid.Row="1" Margin="0,8"><TextBlock Text="I reviewed the targets and prerequisites. This can take effect immediately; shared profiles affect other devices." TextWrapping="Wrap"/></CheckBox>
+                                    <WrapPanel Grid.Row="2"><Button x:Name="AdPreviewButton" Content="Preview and validate" Style="{StaticResource SecondaryButtonStyle}"/><Button x:Name="AdApplyButton" Content="Apply AD action" Style="{StaticResource PrimaryButtonStyle}"/></WrapPanel>
+                                </Grid>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Guides">
+                <Grid Margin="0,10,0,0" TextElement.Foreground="{DynamicResource TextBrush}"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                    <WrapPanel><ComboBox x:Name="GuideTopicCombo" Width="340" DisplayMemberPath="Title"/><Button x:Name="GuideSamplesButton" Content="Sample CSV folder" Style="{StaticResource SecondaryButtonStyle}"/><Button x:Name="GuidePortalButton" Content="Quest web console" Style="{StaticResource GhostButtonStyle}"/><Button x:Name="GuideDocsButton" Content="Quest documentation" Style="{StaticResource GhostButtonStyle}"/></WrapPanel>
+                    <TextBox x:Name="GuideTextBox" Grid.Row="1" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,10,0,0"/>
+                </Grid>
+            </TabItem>
+
         </TabControl>
 
         <!-- Footer -->

@@ -1,0 +1,26 @@
+Scenario,OrganizationId,EnvironmentId,Targets,ModuleVersion,Operator,Date,Expected,Actual,QuestJobOrRunId,ReportPath,Result,Disposition
+AD-only organization selection,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Bounded inventory and exact lookup,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Workflow runs and logs,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Source/target/profile verification,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Cross-context Safe Mode reset,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Remove-ODMSSDeviceScheduled,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Remove-ODMSSDeviceUserScheduled,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Set-OdmAdDevice,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Set-OdmAdDeviceInteractiveProfile,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Set-OdmAdDeviceReACLProfile,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Set-ODMSSDeviceSelfMigration,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Set-ODMSSDeviceUserSelfMigration,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Start-OdmAdDeviceCacheCredentials,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Start-OdmAdDeviceCleanup,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Start-OdmAdDeviceCustomAction,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Start-OdmAdDeviceCutover,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Start-OdmAdDeviceDiscovery,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Start-OdmAdDeviceEntraIDCutover,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Start-OdmAdDeviceFileShareCleanup,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Start-OdmAdDeviceFileShareReACL,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Start-OdmAdDeviceFileShareReACLRollback,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Start-OdmAdDeviceOfflineDomainJoin,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Start-OdmAdDeviceReACL,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Start-OdmAdWorkflow,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot
+Start-ODMSSDeviceMigrateNow,,,,2.1.401,,,Approved pilot result,,,,NOT RUN,Only run if approved for this pilot

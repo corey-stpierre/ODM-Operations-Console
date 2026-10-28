@@ -1,0 +1,1191 @@
+{
+  "InspectedModuleVersion": "2.1.401",
+  "Inventories": [
+    {
+      "Kind": "Devices",
+      "Name": "Devices",
+      "Command": "Get-OdmAdDevice",
+      "IdentityProperty": "DeviceId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Filter",
+        "Limit",
+        "Detailed",
+        "Include"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "Actions",
+      "Name": "Actions",
+      "Command": "Get-OdmAdDeviceAction",
+      "IdentityProperty": "DeviceActionId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Filter",
+        "Limit",
+        "Detailed"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "AgentConfigs",
+      "Name": "Agent configuration (keys hidden)",
+      "Command": "Get-OdmAdDeviceAgentConfig",
+      "IdentityProperty": "",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "Credentials",
+      "Name": "Credentials",
+      "Command": "Get-OdmAdDeviceCredential",
+      "IdentityProperty": "DeviceCredentialId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "AsPlainText",
+        "Filter",
+        "Limit"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "CredentialCacheProfiles",
+      "Name": "Credential Cache Profiles",
+      "Command": "Get-OdmAdDeviceCredentialCacheProfile",
+      "IdentityProperty": "DeviceCredentialCacheProfileId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Filter",
+        "Limit"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "DataRepositories",
+      "Name": "Data repositories",
+      "Command": "Get-OdmAdDeviceDataRepository",
+      "IdentityProperty": "DataRepositoryId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Filter",
+        "Limit",
+        "Detailed"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "EntraIDJoinProfiles",
+      "Name": "EntraID Join Profiles",
+      "Command": "Get-OdmAdDeviceEntraIDJoinProfile",
+      "IdentityProperty": "DeviceEntraIDJoinProfileId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Filter",
+        "Limit",
+        "Detailed"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "FileShares",
+      "Name": "File Shares",
+      "Command": "Get-OdmAdDeviceFileShare",
+      "IdentityProperty": "DeviceFileShareId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "AsPlainText",
+        "Filter",
+        "Limit",
+        "Detailed"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "GlobalVariables",
+      "Name": "Global Variables",
+      "Command": "Get-OdmAdDeviceGlobalVariable",
+      "IdentityProperty": "DeviceGlobalVariableId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "AsPlainText",
+        "Filter",
+        "Limit"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "InteractiveProfiles",
+      "Name": "Interactive Profiles",
+      "Command": "Get-OdmAdDeviceInteractiveProfile",
+      "IdentityProperty": "DeviceInteractiveProfileId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Filter",
+        "Limit"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "DeviceJobs",
+      "Name": "Device Jobs",
+      "Command": "Get-OdmAdDeviceJob",
+      "IdentityProperty": "DeviceJobId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Device",
+        "DeviceFileShare",
+        "Filter",
+        "Limit",
+        "Detailed"
+      ],
+      "ParentKind": "Devices",
+      "ParentParameter": "Device"
+    },
+    {
+      "Kind": "MigrationProfiles",
+      "Name": "Migration Profiles",
+      "Command": "Get-OdmAdDeviceMigrationProfile",
+      "IdentityProperty": "DeviceMigrationProfileId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Filter",
+        "Limit"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "MigrationWaves",
+      "Name": "Migration Waves",
+      "Command": "Get-OdmAdDeviceMigrationWave",
+      "IdentityProperty": "DeviceMigrationWaveId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Filter",
+        "Limit"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "NetworkProfiles",
+      "Name": "Network Profiles",
+      "Command": "Get-OdmadDeviceNetworkProfile",
+      "IdentityProperty": "DeviceNetworkProfileId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Filter",
+        "Limit"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "ReACLProfiles",
+      "Name": "ReACL Profiles",
+      "Command": "Get-OdmAdDeviceReACLProfile",
+      "IdentityProperty": "DeviceReACLProfileId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Filter",
+        "Limit"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "ShareReACLProfiles",
+      "Name": "Share ReACL Profiles",
+      "Command": "Get-OdmAdDeviceShareReACLProfile",
+      "IdentityProperty": "DeviceShareReACLProfileId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Filter",
+        "Limit"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "Tasks",
+      "Name": "Tasks",
+      "Command": "Get-OdmAdDeviceTask",
+      "IdentityProperty": "DeviceTaskId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Filter",
+        "Limit",
+        "Detailed"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "DirectoryObjects",
+      "Name": "Directory Objects",
+      "Command": "Get-OdmADDirectoryObject",
+      "IdentityProperty": "DSDirectoryObjectId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Filter",
+        "Limit",
+        "Detailed"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "Environments",
+      "Name": "Environments",
+      "Command": "Get-OdmAdEnvironment",
+      "IdentityProperty": "EndpointId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Filter",
+        "EndpointType",
+        "Schedule",
+        "Limit",
+        "Detailed"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "ExchangeEnvironments",
+      "Name": "Exchange Environments",
+      "Command": "Get-OdmAdExEnvironment",
+      "IdentityProperty": "TenantId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Filter",
+        "Limit"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "ExchangeServiceAccounts",
+      "Name": "Exchange Service Accounts",
+      "Command": "Get-OdmAdExServiceAccount",
+      "IdentityProperty": "ServiceAccountId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Filter",
+        "Limit"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "ServiceAccounts",
+      "Name": "Service Accounts",
+      "Command": "Get-OdmAdServiceAccount",
+      "IdentityProperty": "ServiceAccountId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Filter",
+        "Limit"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "Workflows",
+      "Name": "Workflows",
+      "Command": "Get-OdmAdWorkflow",
+      "IdentityProperty": "WorkflowId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Schedule",
+        "Filter",
+        "Limit",
+        "Detailed"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "WorkflowLogs",
+      "Name": "Workflow Logs",
+      "Command": "Get-OdmAdWorkflowLog",
+      "IdentityProperty": "",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Levels",
+        "Filter",
+        "Limit"
+      ],
+      "ParentKind": "WorkflowRuns",
+      "ParentParameter": "Identity"
+    },
+    {
+      "Kind": "WorkflowRuns",
+      "Name": "Workflow Runs",
+      "Command": "Get-OdmAdWorkflowRun",
+      "IdentityProperty": "WorkflowRunId",
+      "IdentityParameter": "Identity",
+      "OpaqueId": false,
+      "Parameters": [
+        "Identity",
+        "Workflow",
+        "Filter",
+        "Limit"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "SelfServiceDevices",
+      "Name": "Self Service Devices",
+      "Command": "Get-ODMSSDevice",
+      "IdentityProperty": "Id",
+      "IdentityParameter": "Id",
+      "OpaqueId": true,
+      "Parameters": [
+        "Id",
+        "MigrationWaveId",
+        "SelfServiceMigrationStatus",
+        "SelfMigrationEnabled",
+        "Notified",
+        "Scheduled",
+        "Migrated",
+        "ScheduledStartDate",
+        "ScheduledEndDate",
+        "LastMigratedStartDate",
+        "LastMigratedEndDate",
+        "SearchQuery",
+        "Order",
+        "Limit"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    },
+    {
+      "Kind": "SelfServiceUsers",
+      "Name": "Self Service Users",
+      "Command": "Get-ODMSSDeviceUser",
+      "IdentityProperty": "Id",
+      "IdentityParameter": "Id",
+      "OpaqueId": true,
+      "Parameters": [
+        "Id",
+        "Notified",
+        "EmailUploaded",
+        "SearchQuery",
+        "DeviceId",
+        "DeviceMigrationWaveId",
+        "DeviceSelfServiceMigrationStatus",
+        "DeviceSelfMigrationEnabled",
+        "DeviceScheduled",
+        "DeviceMigrated",
+        "DeviceScheduledStartDate",
+        "DeviceScheduledEndDate",
+        "DeviceLastMigratedStartDate",
+        "DeviceLastMigratedEndDate",
+        "Order",
+        "Limit"
+      ],
+      "ParentKind": "",
+      "ParentParameter": ""
+    }
+  ],
+  "Operations": [
+    {
+      "Command": "Remove-ODMSSDeviceScheduled",
+      "Name": "Device Scheduled (Remove)",
+      "TargetKind": "SelfServiceDevices",
+      "TargetParameter": "Id",
+      "Mode": "Remove",
+      "Risk": "Configuration or schedule change",
+      "Parameters": [
+        {
+          "Name": "SendNotificationTo",
+          "Type": "Quest.ODMAD.SDK.Models.SendNotificationTo",
+          "Required": true,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "NotificationTemplateId",
+          "Type": "System.Guid",
+          "Required": true,
+          "ReferenceKind": "",
+          "Description": "Exact notification-template GUID from Quest. The API has no template inventory here; confirm the template and recipients in Quest before applying."
+        }
+      ],
+      "UnsupportedParameters": []
+    },
+    {
+      "Command": "Remove-ODMSSDeviceUserScheduled",
+      "Name": "Device User Scheduled (Remove)",
+      "TargetKind": "SelfServiceUsers",
+      "TargetParameter": "Id",
+      "Mode": "Remove",
+      "Risk": "Configuration or schedule change",
+      "Parameters": [
+        {
+          "Name": "NotificationTemplateId",
+          "Type": "System.Guid",
+          "Required": true,
+          "ReferenceKind": "",
+          "Description": "Exact notification-template GUID from Quest. The API has no template inventory here; confirm the template and recipients in Quest before applying."
+        }
+      ],
+      "UnsupportedParameters": []
+    },
+    {
+      "Command": "Set-OdmAdDevice",
+      "Name": "Device (Set)",
+      "TargetKind": "Devices",
+      "TargetParameter": "Identity",
+      "Mode": "Set",
+      "Risk": "Configuration or schedule change",
+      "Parameters": [
+        {
+          "Name": "TargetEnvironment",
+          "Type": "System.Object",
+          "Required": false,
+          "ReferenceKind": "Environments",
+          "Description": "Exact Environments ID from the AD inventory; resolved again before submission."
+        },
+        {
+          "Name": "ReACLProfile",
+          "Type": "System.Object",
+          "Required": false,
+          "ReferenceKind": "ReACLProfiles",
+          "Description": "Exact ReACLProfiles ID from the AD inventory; resolved again before submission."
+        },
+        {
+          "Name": "CredentialCache",
+          "Type": "System.Object",
+          "Required": false,
+          "ReferenceKind": "CredentialCacheProfiles",
+          "Description": "Exact CredentialCacheProfiles ID from the AD inventory; resolved again before submission."
+        },
+        {
+          "Name": "CutoverCredential",
+          "Type": "System.Object",
+          "Required": false,
+          "ReferenceKind": "Credentials",
+          "Description": "Exact Credentials ID from the AD inventory; resolved again before submission."
+        },
+        {
+          "Name": "InteractiveProfile",
+          "Type": "System.Object",
+          "Required": false,
+          "ReferenceKind": "InteractiveProfiles",
+          "Description": "Exact InteractiveProfiles ID from the AD inventory; resolved again before submission."
+        },
+        {
+          "Name": "MigrationWave",
+          "Type": "System.Object",
+          "Required": false,
+          "ReferenceKind": "MigrationWaves",
+          "Description": "Exact MigrationWaves ID from the AD inventory; resolved again before submission."
+        },
+        {
+          "Name": "MigrationProfile",
+          "Type": "System.Object",
+          "Required": false,
+          "ReferenceKind": "MigrationProfiles",
+          "Description": "Exact MigrationProfiles ID from the AD inventory; resolved again before submission."
+        },
+        {
+          "Name": "NetWorkProfile",
+          "Type": "System.Object",
+          "Required": false,
+          "ReferenceKind": "NetworkProfiles",
+          "Description": "Exact NetworkProfiles ID from the AD inventory; resolved again before submission."
+        },
+        {
+          "Name": "EntraIDJoinProfile",
+          "Type": "System.Object",
+          "Required": false,
+          "ReferenceKind": "EntraIDJoinProfiles",
+          "Description": "Exact EntraIDJoinProfiles ID from the AD inventory; resolved again before submission."
+        }
+      ],
+      "UnsupportedParameters": [
+        "SelfServiceProfile"
+      ]
+    },
+    {
+      "Command": "Set-OdmAdDeviceInteractiveProfile",
+      "Name": "Device Interactive Profile (Set)",
+      "TargetKind": "InteractiveProfiles",
+      "TargetParameter": "Identity",
+      "Mode": "Set",
+      "Risk": "Shared profile change",
+      "Parameters": [
+        {
+          "Name": "ProfileName",
+          "Type": "System.String",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "AllowCancel",
+          "Type": "System.Boolean",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "AllowPostpone",
+          "Type": "System.Boolean",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "AllowUnattended",
+          "Type": "System.Boolean",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "TimeoutMinutes",
+          "Type": "System.Int32",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "PostponeLimit",
+          "Type": "System.Int32",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        }
+      ],
+      "UnsupportedParameters": []
+    },
+    {
+      "Command": "Set-OdmAdDeviceReACLProfile",
+      "Name": "Device ReACL Profile (Set)",
+      "TargetKind": "ReACLProfiles",
+      "TargetParameter": "Identity",
+      "Mode": "Set",
+      "Risk": "Shared profile change",
+      "Parameters": [
+        {
+          "Name": "WhatIf",
+          "Type": "System.Boolean",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Changes the shared ReACL profile simulation setting. This is a persisted profile option, not the console preview switch."
+        },
+        {
+          "Name": "UpdateUserProfiles",
+          "Type": "System.Boolean",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "UpdateRightsAssignments",
+          "Type": "System.Boolean",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "UpdateLocalGroups",
+          "Type": "System.Boolean",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "UpdatePrinterShares",
+          "Type": "System.Boolean",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "UpdateDirectoryShares",
+          "Type": "System.Boolean",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "UpdatePrinters",
+          "Type": "System.Boolean",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "UpdateServices",
+          "Type": "System.Boolean",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "UpdateServiceAccounts",
+          "Type": "System.Boolean",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "UpdateRegistry",
+          "Type": "System.Boolean",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "UpdateLocalFolders",
+          "Type": "System.Boolean",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "UpdateFiles",
+          "Type": "System.Boolean",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "UpdateSystemAcls",
+          "Type": "System.Boolean",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "UpdateRoamingProfiles",
+          "Type": "System.Boolean",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "PreserveArchiveBit",
+          "Type": "System.Boolean",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "ProfileName",
+          "Type": "System.String",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "LocalFolders",
+          "Type": "System.String[]",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "One item per line. Commas inside an item are preserved; no PowerShell expressions or quoting."
+        },
+        {
+          "Name": "ExcludePaths",
+          "Type": "System.String[]",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "One item per line. Commas inside an item are preserved; no PowerShell expressions or quoting."
+        },
+        {
+          "Name": "ExcludeRegistryKeys",
+          "Type": "System.String[]",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "One item per line. Commas inside an item are preserved; no PowerShell expressions or quoting."
+        },
+        {
+          "Name": "ElevateFailureAction",
+          "Type": "Quest.ODMAD.SDK.Models.LoggingLevel",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "InvalidSourceProfileAction",
+          "Type": "Quest.ODMAD.SDK.Models.LoggingLevel",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "InvalidTargetProfileAction",
+          "Type": "Quest.ODMAD.SDK.Models.LoggingLevel",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "FailedRegistryUpdateAction",
+          "Type": "Quest.ODMAD.SDK.Models.LoggingLevel",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "LoggingLevel",
+          "Type": "Quest.ODMAD.SDK.Models.LoggingLevelGeneral",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "CustomAceUsage",
+          "Type": "Quest.ODMAD.SDK.Models.CustomAceUsage",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "ExcludeFiles",
+          "Type": "System.String[]",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "One item per line. Commas inside an item are preserved; no PowerShell expressions or quoting."
+        },
+        {
+          "Name": "ExcludeSecurityIdentifiers",
+          "Type": "System.String[]",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "One item per line. Commas inside an item are preserved; no PowerShell expressions or quoting."
+        },
+        {
+          "Name": "ReparsePointRules",
+          "Type": "System.String[]",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "One item per line. Commas inside an item are preserved; no PowerShell expressions or quoting."
+        }
+      ],
+      "UnsupportedParameters": []
+    },
+    {
+      "Command": "Set-ODMSSDeviceSelfMigration",
+      "Name": "Device Self Migration (Set)",
+      "TargetKind": "SelfServiceDevices",
+      "TargetParameter": "Id",
+      "Mode": "Set",
+      "Risk": "Configuration or schedule change",
+      "Parameters": [
+        {
+          "Name": "SendNotificationTo",
+          "Type": "Quest.ODMAD.SDK.Models.SendNotificationTo",
+          "Required": true,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "EnableSelfMigration",
+          "Type": "System.Boolean",
+          "Required": true,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "ScheduledMigrationTime",
+          "Type": "System.DateTimeOffset",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Future ISO timestamp with timezone for self-service migration scheduling. Follow the selected Quest action semantics; this is not a held task."
+        },
+        {
+          "Name": "NotificationTemplateId",
+          "Type": "System.Guid",
+          "Required": true,
+          "ReferenceKind": "",
+          "Description": "Exact notification-template GUID from Quest. The API has no template inventory here; confirm the template and recipients in Quest before applying."
+        }
+      ],
+      "UnsupportedParameters": []
+    },
+    {
+      "Command": "Set-ODMSSDeviceUserSelfMigration",
+      "Name": "Device User Self Migration (Set)",
+      "TargetKind": "SelfServiceUsers",
+      "TargetParameter": "Id",
+      "Mode": "Set",
+      "Risk": "Configuration or schedule change",
+      "Parameters": [
+        {
+          "Name": "EnableSelfMigration",
+          "Type": "System.Boolean",
+          "Required": true,
+          "ReferenceKind": "",
+          "Description": "Optional blank fields are omitted. Review the configured Quest profile and the effective result after submission."
+        },
+        {
+          "Name": "ScheduledMigrationTime",
+          "Type": "System.DateTimeOffset",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Future ISO timestamp with timezone for self-service migration scheduling. Follow the selected Quest action semantics; this is not a held task."
+        },
+        {
+          "Name": "NotificationTemplateId",
+          "Type": "System.Guid",
+          "Required": true,
+          "ReferenceKind": "",
+          "Description": "Exact notification-template GUID from Quest. The API has no template inventory here; confirm the template and recipients in Quest before applying."
+        }
+      ],
+      "UnsupportedParameters": []
+    },
+    {
+      "Command": "Start-OdmAdDeviceCacheCredentials",
+      "Name": "Device Cache Credentials (Start)",
+      "TargetKind": "Devices",
+      "TargetParameter": "Device",
+      "Mode": "Start",
+      "Risk": "Immediate/scheduled action",
+      "Parameters": [
+        {
+          "Name": "CredentialCacheProfile",
+          "Type": "System.Object",
+          "Required": true,
+          "ReferenceKind": "CredentialCacheProfiles",
+          "Description": "Exact CredentialCacheProfiles ID from the AD inventory; resolved again before submission."
+        },
+        {
+          "Name": "DoNotStartBefore",
+          "Type": "System.Nullable`1[[System.DateTime, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional future ISO timestamp with timezone. This is the earliest permitted start, not a held task or guaranteed execution time. Blank submits for immediate processing."
+        }
+      ],
+      "UnsupportedParameters": []
+    },
+    {
+      "Command": "Start-OdmAdDeviceCleanup",
+      "Name": "Device Cleanup (Start)",
+      "TargetKind": "Devices",
+      "TargetParameter": "Device",
+      "Mode": "Start",
+      "Risk": "Immediate/scheduled action",
+      "Parameters": [
+        {
+          "Name": "DoNotStartBefore",
+          "Type": "System.Nullable`1[[System.DateTime, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional future ISO timestamp with timezone. This is the earliest permitted start, not a held task or guaranteed execution time. Blank submits for immediate processing."
+        }
+      ],
+      "UnsupportedParameters": []
+    },
+    {
+      "Command": "Start-OdmAdDeviceCustomAction",
+      "Name": "Device Custom Action (Start)",
+      "TargetKind": "Devices",
+      "TargetParameter": "Device",
+      "Mode": "Start",
+      "Risk": "Immediate/scheduled action",
+      "Parameters": [
+        {
+          "Name": "CustomAction",
+          "Type": "System.Object",
+          "Required": true,
+          "ReferenceKind": "Actions",
+          "Description": "Exact Actions ID from the AD inventory; resolved again before submission."
+        },
+        {
+          "Name": "DoNotStartBefore",
+          "Type": "System.Nullable`1[[System.DateTime, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional future ISO timestamp with timezone. This is the earliest permitted start, not a held task or guaranteed execution time. Blank submits for immediate processing."
+        }
+      ],
+      "UnsupportedParameters": []
+    },
+    {
+      "Command": "Start-OdmAdDeviceCutover",
+      "Name": "Device Cutover (Start)",
+      "TargetKind": "Devices",
+      "TargetParameter": "Device",
+      "Mode": "Start",
+      "Risk": "Immediate/scheduled action",
+      "Parameters": [
+        {
+          "Name": "CutoverCredential",
+          "Type": "System.Object",
+          "Required": true,
+          "ReferenceKind": "Credentials",
+          "Description": "Exact Credentials ID from the AD inventory; resolved again before submission."
+        },
+        {
+          "Name": "MigrationProfile",
+          "Type": "System.Object",
+          "Required": true,
+          "ReferenceKind": "MigrationProfiles",
+          "Description": "Exact MigrationProfiles ID from the AD inventory; resolved again before submission."
+        },
+        {
+          "Name": "NetworkProfile",
+          "Type": "System.Object",
+          "Required": true,
+          "ReferenceKind": "NetworkProfiles",
+          "Description": "Exact NetworkProfiles ID from the AD inventory; resolved again before submission."
+        },
+        {
+          "Name": "IgnoreReACLStatus",
+          "Type": "System.Management.Automation.SwitchParameter",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Bypasses the vendor ReACL-status prerequisite. Use only for a reviewed exception; false preserves the prerequisite."
+        },
+        {
+          "Name": "DoNotStartBefore",
+          "Type": "System.Nullable`1[[System.DateTime, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional future ISO timestamp with timezone. This is the earliest permitted start, not a held task or guaranteed execution time. Blank submits for immediate processing."
+        }
+      ],
+      "UnsupportedParameters": []
+    },
+    {
+      "Command": "Start-OdmAdDeviceDiscovery",
+      "Name": "Device Discovery (Start)",
+      "TargetKind": "Devices",
+      "TargetParameter": "Device",
+      "Mode": "Start",
+      "Risk": "Immediate/scheduled action",
+      "Parameters": [
+        {
+          "Name": "DoNotStartBefore",
+          "Type": "System.Nullable`1[[System.DateTime, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional future ISO timestamp with timezone. This is the earliest permitted start, not a held task or guaranteed execution time. Blank submits for immediate processing."
+        }
+      ],
+      "UnsupportedParameters": []
+    },
+    {
+      "Command": "Start-OdmAdDeviceEntraIDCutover",
+      "Name": "Device EntraID Cutover (Start)",
+      "TargetKind": "Devices",
+      "TargetParameter": "Device",
+      "Mode": "Start",
+      "Risk": "Immediate/scheduled action",
+      "Parameters": [
+        {
+          "Name": "EntraIDJoinProfile",
+          "Type": "System.Object",
+          "Required": true,
+          "ReferenceKind": "EntraIDJoinProfiles",
+          "Description": "Exact EntraIDJoinProfiles ID from the AD inventory; resolved again before submission."
+        },
+        {
+          "Name": "IgnoreReACLStatus",
+          "Type": "System.Management.Automation.SwitchParameter",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Bypasses the vendor ReACL-status prerequisite. Use only for a reviewed exception; false preserves the prerequisite."
+        },
+        {
+          "Name": "DoNotStartBefore",
+          "Type": "System.Nullable`1[[System.DateTime, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional future ISO timestamp with timezone. This is the earliest permitted start, not a held task or guaranteed execution time. Blank submits for immediate processing."
+        }
+      ],
+      "UnsupportedParameters": []
+    },
+    {
+      "Command": "Start-OdmAdDeviceFileShareCleanup",
+      "Name": "Device File Share Cleanup (Start)",
+      "TargetKind": "FileShares",
+      "TargetParameter": "DeviceFileShare",
+      "Mode": "Start",
+      "Risk": "Immediate/scheduled action",
+      "Parameters": [
+        {
+          "Name": "DoNotStartBefore",
+          "Type": "System.Nullable`1[[System.DateTime, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional future ISO timestamp with timezone. This is the earliest permitted start, not a held task or guaranteed execution time. Blank submits for immediate processing."
+        }
+      ],
+      "UnsupportedParameters": []
+    },
+    {
+      "Command": "Start-OdmAdDeviceFileShareReACL",
+      "Name": "Device File Share ReACL (Start)",
+      "TargetKind": "FileShares",
+      "TargetParameter": "DeviceFileShare",
+      "Mode": "Start",
+      "Risk": "Immediate/scheduled action",
+      "Parameters": [
+        {
+          "Name": "DoNotStartBefore",
+          "Type": "System.Nullable`1[[System.DateTime, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional future ISO timestamp with timezone. This is the earliest permitted start, not a held task or guaranteed execution time. Blank submits for immediate processing."
+        }
+      ],
+      "UnsupportedParameters": []
+    },
+    {
+      "Command": "Start-OdmAdDeviceFileShareReACLRollback",
+      "Name": "Device File Share ReACL Rollback (Start)",
+      "TargetKind": "FileShares",
+      "TargetParameter": "DeviceFileShare",
+      "Mode": "Start",
+      "Risk": "Immediate/scheduled action",
+      "Parameters": [
+        {
+          "Name": "DoNotStartBefore",
+          "Type": "System.Nullable`1[[System.DateTime, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional future ISO timestamp with timezone. This is the earliest permitted start, not a held task or guaranteed execution time. Blank submits for immediate processing."
+        }
+      ],
+      "UnsupportedParameters": []
+    },
+    {
+      "Command": "Start-OdmAdDeviceOfflineDomainJoin",
+      "Name": "Device Offline Domain Join (Start)",
+      "TargetKind": "Devices",
+      "TargetParameter": "Device",
+      "Mode": "Start",
+      "Risk": "Immediate/scheduled action",
+      "Parameters": [
+        {
+          "Name": "CutoverCredential",
+          "Type": "System.Object",
+          "Required": true,
+          "ReferenceKind": "Credentials",
+          "Description": "Exact Credentials ID from the AD inventory; resolved again before submission."
+        },
+        {
+          "Name": "IgnoreReACLStatus",
+          "Type": "System.Management.Automation.SwitchParameter",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Bypasses the vendor ReACL-status prerequisite. Use only for a reviewed exception; false preserves the prerequisite."
+        },
+        {
+          "Name": "DoNotStartBefore",
+          "Type": "System.Nullable`1[[System.DateTime, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional future ISO timestamp with timezone. This is the earliest permitted start, not a held task or guaranteed execution time. Blank submits for immediate processing."
+        }
+      ],
+      "UnsupportedParameters": []
+    },
+    {
+      "Command": "Start-OdmAdDeviceReACL",
+      "Name": "Device ReACL (Start)",
+      "TargetKind": "Devices",
+      "TargetParameter": "Device",
+      "Mode": "Start",
+      "Risk": "Immediate/scheduled action",
+      "Parameters": [
+        {
+          "Name": "DoNotStartBefore",
+          "Type": "System.Nullable`1[[System.DateTime, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]",
+          "Required": false,
+          "ReferenceKind": "",
+          "Description": "Optional future ISO timestamp with timezone. This is the earliest permitted start, not a held task or guaranteed execution time. Blank submits for immediate processing."
+        }
+      ],
+      "UnsupportedParameters": []
+    },
+    {
+      "Command": "Start-OdmAdWorkflow",
+      "Name": "Workflow (Start)",
+      "TargetKind": "Workflows",
+      "TargetParameter": "Identity",
+      "Mode": "Start",
+      "Risk": "Immediate/scheduled action",
+      "Parameters": [],
+      "UnsupportedParameters": []
+    },
+    {
+      "Command": "Start-ODMSSDeviceMigrateNow",
+      "Name": "Device Migrate Now (Start)",
+      "TargetKind": "SelfServiceDevices",
+      "TargetParameter": "Id",
+      "Mode": "Start",
+      "Risk": "Immediate/scheduled action",
+      "Parameters": [],
+      "UnsupportedParameters": []
+    }
+  ]
+}

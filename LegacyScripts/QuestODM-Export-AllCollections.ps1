@@ -1,4 +1,4 @@
-<#
+﻿<#
 QuestODM-Export-AllCollections.ps1
 
 Exports all collections from the current ODM workload context to CSV.

@@ -1,4 +1,4 @@
-<#
+﻿<#
 QuestODM-Remove-OdmUsersFromCollections.ps1  (PS 5.1 safe)
 
 Removes specific users from specific collections based on CSV rows:

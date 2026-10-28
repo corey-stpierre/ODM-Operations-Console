@@ -1,11 +1,12 @@
 ﻿[CmdletBinding()]
 param(
-    [Parameter()][string]$RootPath = (Split-Path -Parent $PSScriptRoot),
+    [Parameter()][string]$RootPath,
     [Parameter()][string]$ManifestPath
 )
 
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
+if([string]::IsNullOrWhiteSpace($RootPath)){$RootPath=Split-Path -Parent $PSScriptRoot}
 $resolvedRoot = (Resolve-Path -LiteralPath $RootPath -ErrorAction Stop).Path
 if ([string]::IsNullOrWhiteSpace($ManifestPath)) { $ManifestPath = Join-Path $resolvedRoot 'MANIFEST.sha256' }
 $manifestFullPath = [IO.Path]::GetFullPath($ManifestPath)
@@ -19,7 +20,7 @@ $files = Get-ChildItem -LiteralPath $resolvedRoot -Recurse -File -ErrorAction St
     } | Sort-Object FullName
 foreach ($file in $files) {
     $hash = (Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256 -ErrorAction Stop).Hash.ToLowerInvariant()
-    $relative = $file.FullName.Substring($resolvedRoot.Length).TrimStart('\\','/').Replace('\\','/')
+    $relative = $file.FullName.Substring($resolvedRoot.Length).TrimStart('\','/').Replace('\','/')
     $lines.Add("$hash  $relative") | Out-Null
 }
 [IO.File]::WriteAllLines($manifestFullPath,$lines.ToArray(),[Text.UTF8Encoding]::new($false))

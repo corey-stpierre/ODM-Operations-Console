@@ -1,3 +1,27 @@
+# RC2 — 1.1.0-rc.2 (2026-10-28)
+
+Added the organization-scoped Active Directory/device workspace, 27 inventory types, 20 guarded action forms, AD-specific readiness, exact-ID/CSV targeting, redacted SDK snapshots, one-use previews, partial-failure journals and three AD guide chapters. Added real SDK identity and metadata tests plus light/dark WPF coverage on both supported PowerShell hosts. Live Quest acceptance remains deferred by the user. Environment/workflow design, agent deployment, new profiles and unexported operations remain explicit web-console handoffs.
+
+# 1.1.0-rc.2 — 2026-10-28
+
+Added Operations Center create/update forms, typed inventories, management actions, guides and pilot evidence. Fixed CSV validation, context/reporting, empty response handling, credential redaction and WPF usability. See RELEASE_NOTES.md and AUDIT_REPORT.md. Live Quest acceptance and signing remain pending.
+
+# Preview 7 - Workload console extension (2026-10-15)
+
+- Added Teams/groups/chats, SharePoint, and Power BI typed object inventory with CSV export.
+- Added complete-file CSV validation, collection population, and ten task creation routes.
+- Migration templates are checked for project ownership and exact task type.
+- Power BI uses explicit workspace settings and an operator-supplied target administrator.
+- New tasks use an unscheduled start; creation never calls Start-OdmTask.
+- Existing task names are skipped. Ambiguity, foreign IDs, and inconsistent task groups block writes.
+- Typed membership verification covers groups, chats, gateways, and connections without falling back to the default object type.
+- Results include object/entity IDs, settings, row status, errors, and report paths.
+- Added offline engine, WPF controller, and installed API contract tests.
+
+Validation and known baseline failures are recorded in WORKLOAD_VALIDATION.txt.
+
+---
+
 # Changelog
 
 ## 1.1.0-preview.6

@@ -1,4 +1,4 @@
-using module OdmApi
+﻿using module OdmApi
 <#
 QuestODM-Create-TemplateTasks-FromCollectionCsv.ps1
 

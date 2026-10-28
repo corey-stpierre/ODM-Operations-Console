@@ -1,4 +1,4 @@
-using module OdmApi
+﻿using module OdmApi
 <#
 QuestODM-Delete-AllTasks.ps1
 

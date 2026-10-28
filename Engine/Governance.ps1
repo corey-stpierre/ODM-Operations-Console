@@ -173,12 +173,12 @@ function Disable-QOdmSafeMode {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)][string]$OrganizationId,
-        [Parameter(Mandatory = $true)][string]$ProjectId,
-        [Parameter(Mandatory = $true)][string]$WorkloadId,
+        [Parameter(Mandatory = $true)][AllowEmptyString()][string]$ProjectId,
+        [Parameter(Mandatory = $true)][AllowEmptyString()][string]$WorkloadId,
         [Parameter(Mandatory = $true)][string]$ConfirmationText
     )
 
-    Assert-QOdmWorkloadSelected
+    if ((Get-QOdmProperty $script:QOdmState @('ContextMode')) -eq 'ActiveDirectory') { Assert-QOdmAdContext } else { Assert-QOdmWorkloadSelected }
     if (-not [string]::Equals($ConfirmationText.Trim(), 'ENABLE CHANGES', [StringComparison]::Ordinal)) {
         throw "Enter the exact confirmation text 'ENABLE CHANGES'."
     }
@@ -227,6 +227,10 @@ function Get-QOdmOperationWriteFeature {
 
     $p = if ($null -eq $Parameters) { @{} } else { $Parameters }
     switch ($Operation) {
+        'AdAction' { if ([bool](Get-QOdmProperty $p @('Execute') $false)) { return 'ActiveDirectory' }; return $null }
+        'Management' { if ([bool](Get-QOdmProperty $p @('Execute') $false) -and [string](Get-QOdmProperty $p @('Action')) -ne 'ExportTemplate') { return 'OperationsCenter' }; return $null }
+        'OperationsTask' { if ([bool](Get-QOdmProperty -InputObject $p -Names @('Execute') -Default $false)) { return 'OperationsCenter' }; return $null }
+        'ContentCsv' { if ([bool](Get-QOdmProperty -InputObject $p -Names @('Execute') -Default $false)) { return 'Membership' }; return $null }
         'AddObjectToTask' { return 'Membership' }
         'RemoveObjectFromTask' { return 'Membership' }
         'AddObjectToCollection' { return 'Membership' }
@@ -272,6 +276,9 @@ function Assert-QOdmWriteAllowed {
     if (-not [bool](Get-QOdmProperty -InputObject $script:QOdmState -Names @('ContextValid') -Default $true)) {
         throw 'The Quest context is invalid. Reconnect before performing a write operation.'
     }
+    $isAd=((Get-QOdmProperty $script:QOdmState @('ContextMode')) -eq 'ActiveDirectory')
+    if ($Feature -eq 'ActiveDirectory') { Assert-QOdmAdContext }
+    elseif ($isAd -and $Feature -ne 'LocalWrite') { throw 'Microsoft 365 writes are disabled in the Active Directory workspace.' }
     $blocked = ConvertTo-QOdmObjectArray -InputObject (Get-QOdmProperty -InputObject $script:QOdmState -Names @('BlockedFeatures') -Default @())
     if ($blocked -contains 'AllWrites' -or $blocked -contains $Feature) {
         throw "The most recent readiness check blocks feature '$Feature'. Review Diagnostics, correct the failed readiness checks, and run the check again."
@@ -309,7 +316,7 @@ function New-QOdmReadinessCheckRecord {
 
 function Add-QOdmReadinessCheckRecord {
     param(
-        [Parameter(Mandatory = $true)][System.Collections.Generic.List[object]]$List,
+        [Parameter(Mandatory = $true)][AllowEmptyCollection()][System.Collections.Generic.List[object]]$List,
         [Parameter(Mandatory = $true)][object]$Record
     )
     $List.Add($Record) | Out-Null
@@ -364,7 +371,8 @@ function Invoke-QOdmReadinessCheck {
         [AllowNull()][string]$OutputDirectory = $null
     )
 
-    Set-QOdmOperationPhase -Phase 'Running V1 readiness checks'
+    $isAd=((Get-QOdmProperty $script:QOdmState @('ContextMode')) -eq 'ActiveDirectory')
+    Set-QOdmOperationPhase -Phase 'Running context readiness checks'
     $checks = [System.Collections.Generic.List[object]]::new()
 
     $isWindows = ($env:OS -eq 'Windows_NT')
@@ -410,10 +418,10 @@ function Invoke-QOdmReadinessCheck {
     Add-QOdmReadinessCheckRecord -List $checks -Record (New-QOdmReadinessCheckRecord -Category 'Quest context' -Name 'Authentication' -Status $(if ($connected) {'PASS'} else {'NOT APPLICABLE'}) -Details $(if ($connected) {'Connected to Quest On Demand.'} else {'Connect to Quest to run tenant checks.'}))
     Add-QOdmReadinessCheckRecord -List $checks -Record (New-QOdmReadinessCheckRecord -Category 'Quest context' -Name 'Context validity' -Status $(if (-not $connected) {'NOT APPLICABLE'} elseif ($contextValid) {'PASS'} else {'FAIL'}) -Details $(if ($contextValid) {'Context is valid.'} else {[string]$script:QOdmState.ContextError}) -BlocksFeatures $(if ($connected -and -not $contextValid) {@('AllWrites')} else {@()}))
     Add-QOdmReadinessCheckRecord -List $checks -Record (New-QOdmReadinessCheckRecord -Category 'Quest context' -Name 'Organization selected' -Status $(if (-not $connected) {'NOT APPLICABLE'} elseif ($organizationSelected) {'PASS'} else {'WARNING'}) -Details ([string]$script:QOdmState.OrganizationName))
-    Add-QOdmReadinessCheckRecord -List $checks -Record (New-QOdmReadinessCheckRecord -Category 'Quest context' -Name 'Project selected' -Status $(if (-not $connected) {'NOT APPLICABLE'} elseif ($projectSelected) {'PASS'} else {'WARNING'}) -Details ([string]$script:QOdmState.ProjectName))
-    Add-QOdmReadinessCheckRecord -List $checks -Record (New-QOdmReadinessCheckRecord -Category 'Quest context' -Name 'Workload selected' -Status $(if (-not $connected) {'NOT APPLICABLE'} elseif ($workloadSelected) {'PASS'} else {'WARNING'}) -Details ([string]$script:QOdmState.WorkloadName))
+    Add-QOdmReadinessCheckRecord -List $checks -Record (New-QOdmReadinessCheckRecord -Category 'Quest context' -Name 'Project selected' -Status $(if ($isAd -or -not $connected) {'NOT APPLICABLE'} elseif ($projectSelected) {'PASS'} else {'WARNING'}) -Details ([string]$script:QOdmState.ProjectName))
+    Add-QOdmReadinessCheckRecord -List $checks -Record (New-QOdmReadinessCheckRecord -Category 'Quest context' -Name 'Workload selected' -Status $(if ($isAd -or -not $connected) {'NOT APPLICABLE'} elseif ($workloadSelected) {'PASS'} else {'WARNING'}) -Details ([string]$script:QOdmState.WorkloadName))
 
-    if ($connected -and $organizationSelected) {
+    if ($connected -and $organizationSelected -and -not $isAd) {
         if (Test-QOdmCommand -Name 'Get-OdmRoleAssignments') {
             try {
                 $roleAssignments = ConvertTo-QOdmObjectArray -InputObject (Get-OdmRoleAssignments -ErrorAction Stop)
@@ -446,7 +454,7 @@ function Invoke-QOdmReadinessCheck {
         if (Test-QOdmCommand -Name 'Test-ActiveMigrationSubscription') {
             try {
                 $activeSubscription = [bool](Test-ActiveMigrationSubscription -ErrorAction Stop)
-                Add-QOdmReadinessCheckRecord -List $checks -Record (New-QOdmReadinessCheckRecord -Category 'Quest access' -Name 'Active migration subscription' -Status $(if ($activeSubscription) {'PASS'} else {'FAIL'}) -Details $(if ($activeSubscription) {'An active migration subscription was found.'} else {'No active migration subscription was reported.'}) -BlocksFeatures $(if ($activeSubscription) {@()} else {@('TaskFactory','AccountDiscovery','TaskLifecycle')}) -Evidence $effectiveSubscription)
+                Add-QOdmReadinessCheckRecord -List $checks -Record (New-QOdmReadinessCheckRecord -Category 'Quest access' -Name 'Active migration subscription' -Status $(if ($activeSubscription) {'PASS'} else {'FAIL'}) -Details $(if ($activeSubscription) {'An active migration subscription was found.'} else {'No active migration subscription was reported.'}) -BlocksFeatures $(if ($activeSubscription) {@()} else {@('TaskFactory','ContentTasks','AccountDiscovery','TaskLifecycle')}) -Evidence $effectiveSubscription)
             }
             catch { Add-QOdmReadinessCheckRecord -List $checks -Record (New-QOdmReadinessCheckRecord -Category 'Quest access' -Name 'Active migration subscription' -Status 'WARNING' -Details $_.Exception.Message) }
         }
@@ -454,7 +462,7 @@ function Invoke-QOdmReadinessCheck {
     }
     else {
         foreach ($name in @('Role assignments','Role definitions','Effective migration subscription','Active migration subscription')) {
-            Add-QOdmReadinessCheckRecord -List $checks -Record (New-QOdmReadinessCheckRecord -Category 'Quest access' -Name $name -Status 'NOT APPLICABLE' -Details 'Connect and select an organization to run this check.')
+            Add-QOdmReadinessCheckRecord -List $checks -Record (New-QOdmReadinessCheckRecord -Category 'Quest access' -Name $name -Status 'NOT APPLICABLE' -Details $(if($isAd){'Microsoft 365 check; review AD permissions and licensing in Quest.'}else{'Connect and select an organization to run this check.'}))
         }
     }
 
@@ -482,6 +490,14 @@ function Invoke-QOdmReadinessCheck {
         }
     }
 
+    if ($isAd) {
+        $adCatalog=Get-QOdmAdCatalog
+        $adActions=@($adCatalog.Operations|Where-Object {$_.Available})
+        $adReads=@($adCatalog.Inventories|Where-Object {$_.Available})
+        Add-QOdmReadinessCheckRecord -List $checks -Record (New-QOdmReadinessCheckRecord -Category 'Active Directory' -Name 'AD command contracts' -Status $(if($adActions.Count -gt 0){'PASS'}else{'FAIL'}) -Details ("Loaded module exposes {0} reviewed AD actions and {1} inventories. Availability is not tenant acceptance." -f $adActions.Count,$adReads.Count) -BlocksFeatures $(if($adActions.Count -gt 0){@()}else{@('ActiveDirectory')}))
+        Add-QOdmReadinessCheckRecord -List $checks -Record (New-QOdmReadinessCheckRecord -Category 'Active Directory' -Name 'AD pilot prerequisites' -Status 'WARNING' -Details 'Not automatically verified: AD licensing/roles, environment connectivity, agents, mappings, profile configuration, cutover prerequisites and recovery. Review these in Quest and the AD Guides before applying any action.')
+    }
+
     $safeMode = Get-QOdmSafeModeState
     Add-QOdmReadinessCheckRecord -List $checks -Record (New-QOdmReadinessCheckRecord -Category 'Safety' -Name 'Safe Mode' -Status $(if ([bool]$safeMode.Enabled) {'PASS'} else {'WARNING'}) -Details $(if ([bool]$safeMode.Enabled) {'Read-only Safe Mode is enabled.'} else {'Changes are enabled for the active context.'}))
 
@@ -498,6 +514,7 @@ function Invoke-QOdmReadinessCheck {
     }
     $overall = if ($failCount -gt 0) { 'FAIL' } elseif ($warningCount -gt 0) { 'WARNING' } else { 'PASS' }
     $contextDisplay = '{0} / {1} / {2}' -f $script:QOdmState.OrganizationName,$script:QOdmState.ProjectName,$script:QOdmState.WorkloadName
+    if ($isAd) { $contextDisplay="$($script:QOdmState.OrganizationName) / Active Directory (organization scope)" }
     $result = [pscustomobject]@{
         ConsoleVersion=(Get-QOdmConsoleVersion); StartedAt=$script:QOdmState.CurrentOperationStartedAt; CompletedAt=Get-Date
         ContextDisplay=$contextDisplay; Context=(Get-QOdmContextState); Compatibility=$compatibility; Checks=$checkArray
@@ -552,7 +569,19 @@ function ConvertTo-QOdmSanitizedValue {
 
     if ($Depth -gt 6) { return '<depth-limit>' }
     if ($null -eq $Value) { return $null }
-    if ($Value -is [string] -or $Value -is [ValueType]) { return $Value }
+    if ($Value -is [ValueType]) { return $Value }
+    if ($Value -is [string]) {
+        # Quest template Values is serialized JSON, not a nested PowerShell object.
+        # Sanitize inside it before including templates in operation/support reports.
+        if ($Value.TrimStart() -match '^[\{\[]') {
+            try {
+                $decoded=$Value|ConvertFrom-Json -ErrorAction Stop
+                $clean=ConvertTo-QOdmSanitizedValue -Value $decoded -Depth ($Depth+1)
+                return ($clean|ConvertTo-Json -Depth 20 -Compress)
+            } catch { }
+        }
+        return (Protect-QOdmSupportText -Text $Value)
+    }
     if ($Value -is [System.Collections.IDictionary]) {
         $copy = [ordered]@{}
         foreach ($keyObject in (ConvertTo-QOdmObjectArray -InputObject $Value.Keys)) {
@@ -734,7 +763,8 @@ function Get-QOdmTaskDetails {
     if ($IncludeReporting -and (Test-QOdmCommand -Name 'Get-OdmReporting')) {
         try {
             $parameters = @{}
-            if (-not [string]::IsNullOrWhiteSpace([string]$script:QOdmState.ProjectId)) { $parameters.ProjectId = [string]$script:QOdmState.ProjectId }
+            # Reporting belongs to the selected workload, not its parent project.
+            $parameters.ProjectId = [string]$script:QOdmState.WorkloadId
             $parameters.All = $true
             $allReporting = Invoke-QOdmSupportedCommandArray -CommandName 'Get-OdmReporting' -Parameters $parameters -OptionalParameters @('ProjectId','All')
             $taskName = Get-QOdmName $task
@@ -850,7 +880,7 @@ function Protect-QOdmSupportText {
     $patterns = @(
         [pscustomobject]@{ Pattern='(?im)(Authorization\s*[:=]\s*Bearer\s+)[^\s\"'']+'; Replacement='$1<redacted>' },
         [pscustomobject]@{ Pattern='(?im)((?:access_token|refresh_token|id_token|client_secret|password|passwd|secret|cookie|set-cookie|api[_-]?key)\s*[=:]\s*)[^\r\n,;]+'; Replacement='$1<redacted>' },
-        [pscustomobject]@{ Pattern='(?i)eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}'; Replacement='<redacted-jwt>' }
+        [pscustomobject]@{ Pattern='(?i)\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+'; Replacement='<redacted-jwt>' }
     )
     foreach ($entry in $patterns) {
         try { $sanitized = [regex]::Replace($sanitized,[string]$entry.Pattern,[string]$entry.Replacement) }

@@ -334,7 +334,7 @@ function Start-QOdmTasks {
 
 function Stop-QOdmTasks {
     [CmdletBinding()]
-    param([Parameter(Mandatory = $true)][string[]]$TaskIds)
+    param([Parameter(Mandatory = $true)][string[]]$TaskIds, [ValidateRange(0,60)][int]$DelaySeconds = 2)
 
     Assert-QOdmWorkloadSelected
     $ids = @($TaskIds | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) } | ForEach-Object { ([string]$_).Trim() } | Select-Object -Unique)
@@ -345,7 +345,7 @@ function Stop-QOdmTasks {
         if ($null -eq $task) {
             $results.Add([pscustomobject]@{ TaskId=$id; TaskName=$null; PreviousStatus=$null; StopAttempted=$false; StopSucceeded=$false; Status='NOT_FOUND'; Details='Task was not found.' }) | Out-Null
         }
-        else { $results.Add((Stop-QOdmTaskSafely -Task $task)) | Out-Null }
+        else { $results.Add((Stop-QOdmTaskSafely -Task $task -DelaySeconds $DelaySeconds)) | Out-Null }
     }
     try { $null = Update-QOdmTaskCache } catch { Add-QOdmWarning -Message "Task inventory refresh after stop processing failed: $($_.Exception.Message)" }
     $results.ToArray()

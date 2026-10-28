@@ -24,7 +24,7 @@ On a Windows release-test workstation, run:
 powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File .\Tests\Run-V1Acceptance.ps1
 ```
 
-Live Quest writes, installed-production-`OdmApi`, Active Directory and Entra collection, WPF behavior, and Authenticode remain environment-specific release gates.
+For RC1, also run `Tests/Run-RcAcceptance.ps1 -ModuleManifest <OdmApi 2.1.401 manifest>` on PS5.1 and PS7. It isolates native backend fixtures from the normal suite. Connected Quest pilot acceptance and Authenticode remain release gates. No live test is implied by a local pass. Record outcomes in Samples/PilotAcceptance.csv.
 
 ## Generate the internal manifest
 

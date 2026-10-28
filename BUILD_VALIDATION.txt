@@ -1,49 +1,34 @@
-Repository preparation note (2026-08-25):
-- This is the historical Preview 6 build-validation record.
-- The GitHub-ready source adds repository metadata and sanitizes legacy examples.
-- See docs/REPOSITORY_PREPARATION.md for current-tree changes and validation.
+Quest ODM Operations Console 1.1.0-rc.2 - 2026-10-28
 
-Quest ODM Operations Console 1.1.0-preview.6 - Build Validation
-Build ID: V1.1-PREVIEW-20260817.6
-Build date UTC: 2026-08-17T17:50:00Z
-Immediate baseline: Quest ODM Operations Console 1.1.0-preview.5
-Stable baseline: Quest ODM Operations Console 1.0.3
+PASS: Full RC acceptance on Windows PowerShell 5.1.26100.9711 x64 STA.
+PASS: Full RC acceptance on PowerShell 7.6.9 x64 STA.
+PASS: Existing accounts/content/lifecycle/membership/collision/governance/UI regressions.
+PASS: 169 unique enabled M365 task commands (104 create, 65 update) in OdmApi 2.1.401;
+      five explicitly blocked creation routes remain web-console handoffs.
+PASS: AD metadata and offline fixtures: all 27 inventories and 20 actions.
+PASS: Final AD regression on both hosts after readiness, real SDK self-service ID,
+      complete inventory, display naming and strict CSV-column validation changes.
+PASS: Final governance regression on both hosts after AD readiness integration.
+PASS: Final AD WPF tests on both hosts after inventory name-column correction.
+      Both themes at minimum 1180x760 were rendered and visually inspected.
+PASS: Python static, runtime-source and Mapping Collision Utility checks.
+PASS: Older OdmApi 2.1.396 availability inspection: 27 AD reads, 20 AD actions.
+      This older-version check is metadata-only, not AD backend acceptance.
+PASS: Signature inspection: 50 script/module files, all unsigned.
 
-Platform-neutral validation targets:
-- Required package files and 16 legacy scripts
-- UTF-8/BOM policy for PowerShell sources
-- PowerShell lexical/delimiter checks
-- Main and utility XAML XML parsing
-- Static/Dynamic resource resolution
-- Main/utility control reference validation
-- Production callback-scope regression guard
-- Absence of production GetNewClosure() calls
-- Bulk result callback context and failure cleanup markers
-- CSV membership action footer containment markers
-- Theme and log-maintenance regression markers
-- JSON parsing and default retention setting
-- Mapping Collision sample/schema/scenario checks
-- Runtime source audit
-- Internal SHA-256 manifest
-- ZIP CRC and clean-extraction byte comparison
+The complete suites passed before the final AD/readiness/layout refinements;
+the relevant AD, governance and WPF suites then passed on both hosts. Evidence
+files beginning rc2- record those exact runs. Native compiled AD service cmdlets
+were not invoked. Tests use installed metadata, real SDK Device/self-service models,
+a pure vendor identity-conversion helper and a mocked console service boundary.
 
-Native Windows gates included but not run on Linux:
-- Native Windows PowerShell parser over all shipped sources
-- UI callback-scope AST test
-- Main and utility WPF regression tests
-- Log-maintenance execution tests
-- Mapping Collision engine execution
-- UI minimum-size containment
-- Governance and installed production OdmApi preflight
-- Live Quest, Active Directory, and Entra operations
+LIVE QUEST / AD: NOT RUN. User will test when a pilot is available.
+SIGNING: UNSIGNED. No private certificate or tenant credential was used.
+PRODUCTION APPROVAL: false. Candidate for connected pilot acceptance.
+FULL WEB-CONSOLE PARITY: not claimed. Setup and unexported/vendor-only operations
+remain documented web-console handoffs; Hybrid SharePoint is outside scope.
 
-Final result and counts are recorded after package construction.
-
-Platform-neutral result: PASS
-Runtime source audit: PASS
-Mapping Collision Utility static validation: PASS
-UI callback-scope static validation: PASS
-Package files: 106
-Internal manifest entries: 105
-Changed/new file records from Preview 5: 25
-ZIP integrity and clean-extraction comparison: PASS after final archive generation
+Guides: OPERATOR_GUIDE.html and 16 in-app topics.
+Pilot worksheets: Samples/PilotAcceptance.csv and ActiveDirectoryPilotAcceptance.csv.
+Coverage: docs/QUEST_PARITY.csv. Evidence: Tests/Evidence/rc2-*.
+Package verification: SHA-256 manifest plus all ZIP payloads verified by packaging.

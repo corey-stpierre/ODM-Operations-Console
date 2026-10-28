@@ -1,4 +1,4 @@
-<#
+﻿<#
 Purpose:
   Quest ODM / Intune preflight cleanup.
 

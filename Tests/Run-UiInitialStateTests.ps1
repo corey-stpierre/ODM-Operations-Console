@@ -32,7 +32,8 @@ function Import-ProductionFunction {
         throw "Expected one production definition for '$FunctionName'; found $($matches.Count)."
     }
 
-    . ([scriptblock]::Create([string]$matches[0].Extent.Text))
+    # Install in this test script's scope, not the short-lived helper scope.
+    . ([scriptblock]::Create(([string]$matches[0].Extent.Text -replace ('function\s+' + [regex]::Escape($FunctionName)), ('function script:' + $FunctionName))))
 }
 
 if ($env:OS -ne 'Windows_NT') {
@@ -61,26 +62,14 @@ if (@($parseErrors).Count -gt 0) {
     throw ('The production UI controller does not parse: ' + ((@($parseErrors | ForEach-Object { $_.Message })) -join '; '))
 }
 
-foreach ($functionName in @(
-    'ConvertTo-UiObjectArray',
-    'Get-UiControl',
-    'Get-SelectedGridItems',
-    'Get-SelectedGridItem',
-    'Get-ObjectPropertyValue',
-    'Test-ObjectPropertyTrue',
-    'Get-UiSafeCount',
-    'Set-ComboItems',
-    'Set-GridItems',
-    'ConvertTo-OverviewCountText',
-    'Format-OverviewRefreshedAt',
-    'Show-OverviewSnapshot',
-    'Clear-OverviewSnapshot',
-    'Assert-UiSelectionCardinalityContract',
-    'Update-UiEnablement',
-    'Reset-WorkspaceUi'
-)) {
-    Import-ProductionFunction -Ast $uiAst -FunctionName $functionName
+foreach ($definition in $uiAst.FindAll({param($n) $n -is [System.Management.Automation.Language.FunctionDefinitionAst]},$false)) {
+    . ([scriptblock]::Create($definition.Extent.Text))
 }
+$script:MappingCollisionUtilityRoot = Join-Path $appRoot 'MappingCollisionUtility'
+$script:MappingCollisionUtilityBootstrapPath = Join-Path $script:MappingCollisionUtilityRoot 'MappingCollisionUtility.ps1'
+$script:MappingCollisionUtilityXamlPath = Join-Path $script:MappingCollisionUtilityRoot 'Resources\MappingCollisionUtility.xaml'
+$script:MappingCollisionUtilityEnginePath = Join-Path $script:MappingCollisionUtilityRoot 'Engine\MappingCollisionEngine.psm1'
+$script:OperationHistoryPath = Join-Path $appRoot 'Logs\UnusedTestHistory.jsonl'
 
 $reader = $null
 $script:Window = $null
@@ -98,13 +87,16 @@ try {
         if ($null -ne $control) { $script:Ui[$name] = $control }
     }
 
-    $script:State = [ordered]@{
+    $stateDefinition=$uiAst.Find({param($n) $n -is [System.Management.Automation.Language.AssignmentStatementAst] -and $n.Left.Extent.Text -eq '$script:State'},$false)
+    . ([scriptblock]::Create($stateDefinition.Extent.Text))
+    $testOverrides = [ordered]@{
         Connected        = $false
         WorkloadSelected = $false
         Busy             = $false
         TaskItems        = @()
         CollectionItems  = @()
         TemplateItems    = @()
+        ModuleStatus = [pscustomobject]@{ValidatedInstalled=$true}
         ModuleStatusKnown = $true
         ModuleInstalled = $true
         ModuleUpdateAvailable = $false
@@ -112,6 +104,8 @@ try {
         OverviewSnapshot = $null
         OverviewStatusText = 'No workspace refresh has run.'
     }
+    foreach($key in $testOverrides.Keys){$script:State[$key]=$testOverrides[$key]}
+
 
     # Exercise the exact zero/one/many contract used by task and collection
     # selection handlers before invoking the production initial-state routine.
@@ -143,7 +137,7 @@ try {
     Assert-UiInitialStateCondition -Condition (-not [bool](Get-UiControl 'DeleteSelectedCollectionsButton').IsEnabled) -Message 'Collection deletion must be disabled with zero selected collections.'
     Assert-UiInitialStateCondition -Condition ([bool](Get-UiControl 'CheckOdmApiVersionButton').IsEnabled) -Message 'Module version checking must be available while disconnected.'
     Assert-UiInitialStateCondition -Condition (-not [bool](Get-UiControl 'InstallOdmApiButton').IsEnabled) -Message 'Install must be disabled when OdmApi is already installed.'
-    Assert-UiInitialStateCondition -Condition (-not [bool](Get-UiControl 'UpdateOdmApiButton').IsEnabled) -Message 'Update must be disabled when no update is recommended.'
+    Assert-UiInitialStateCondition -Condition ([bool](Get-UiControl 'UpdateOdmApiButton').IsEnabled) -Message 'Repair validated must remain available for an installed module even without an update.'
 
     $script:State.ModuleInstalled = $false
     $script:State.ModuleCanInstall = $true

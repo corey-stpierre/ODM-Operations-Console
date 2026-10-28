@@ -1,8 +1,9 @@
 {
-  "ConsoleVersion": "1.1.0-preview.6",
+  "ConsoleVersion": "1.1.0-rc.2",
   "MinimumOdmApiVersion": "2.1.396",
   "ValidatedOdmApiVersions": [
-    "2.1.396"
+    "2.1.396",
+    "2.1.401"
   ],
   "RequiredCommands": {
     "Core": [
@@ -62,5 +63,6 @@
     "Get-OdmReportInfo",
     "Get-OdmReport",
     "New-OdmReportingErrorLogsExportTask"
-  ]
+  ],
+  "ValidationScope": "Local imports, metadata, mocked behavior and offline acceptance only; tenant-connected acceptance is pending."
 }

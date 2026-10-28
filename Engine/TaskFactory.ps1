@@ -176,6 +176,7 @@ function Invoke-QOdmTaskFactory {
     )
 
     Assert-QOdmWorkloadSelected
+    Assert-QOdmAccountsWorkload
     if ($MaxUsersPerTask -lt 1) { throw 'MaxUsersPerTask must be at least 1.' }
     if ($VerificationRetries -lt 1) { $VerificationRetries=1 }
     if ($VerificationDelaySeconds -lt 0) { $VerificationDelaySeconds=0 }

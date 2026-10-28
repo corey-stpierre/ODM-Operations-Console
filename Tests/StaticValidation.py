@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Platform-neutral release validation for Quest ODM Operations Console 1.1.0-preview.6."""
+"""Platform-neutral release validation for Quest ODM Operations Console 1.1.0-rc.2."""
 from __future__ import annotations
 import csv, json, re, subprocess, sys, xml.etree.ElementTree as ET
 from collections import Counter
@@ -10,9 +10,11 @@ from pygments.lexers.shell import PowerShellLexer
 from pygments.token import Token
 
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_VERSION='1.1.0-preview.6'
+EXPECTED_VERSION='1.1.0-rc.2'
 XAML_NS='http://schemas.microsoft.com/winfx/2006/xaml'
 REQUIRED_FILES=[
+ "Engine/ActiveDirectory.ps1","Config/ActiveDirectoryCatalog.json","Tests/Run-ActiveDirectoryTests.ps1","Tests/Run-ActiveDirectoryWpfTests.ps1",
+ "Engine/OperationsCenter.ps1","Engine/Management.ps1","Config/OperationsCatalog.json","Config/OperatorGuides.json","Tests/Run-OperationsCenterTests.ps1","Tests/Run-ManagementTests.ps1","Tests/Run-OperationsWpfTests.ps1","Tests/Run-RcAcceptance.ps1","OPERATOR_GUIDE.html","docs/QUEST_PARITY.csv",
  'QuestODMConsole.ps1','QuestODMConsole.UI.ps1','VERSION.txt','README.md','RELEASE_NOTES.md','ROLLBACK.md','SUPPORT.md','NOTICE.md','CHANGELOG.md','FEATURE_MATRIX.md','AUDIT_REPORT.md','FILES_CHANGED.md','BUILD_VALIDATION.txt','V1_RELEASE_VALIDATION.json','SIGNING_STATUS.txt','MANIFEST.sha256',
  'Start-QuestODMConsole.cmd','Start-QuestODMConsole-WindowsPowerShell.cmd','Start-QuestODMConsole-PowerShell7.cmd',
  'Resources/QuestODMConsole.xaml','Resources/QuestSoftwareLogo.png','Resources/BRANDING.md','Config/QuestODMConsole.settings.json','Config/BuildInfo.json','Config/OdmApiCompatibility.json',

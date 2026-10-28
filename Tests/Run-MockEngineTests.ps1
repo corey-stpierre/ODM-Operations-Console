@@ -213,7 +213,8 @@ try {
     # RC6 local OdmApi status must detect the globally loaded mock module without making an online call.
     $moduleStatus=Invoke-TestOperation -Operation GetOdmApiModuleStatus -Parameters @{CheckOnline=$false}
     Assert-True ([bool]$moduleStatus.Data.Installed) 'The module-status operation must detect the installed mock OdmApi module.'
-    Assert-True ([string]$moduleStatus.Data.InstalledVersion -eq '2.1.396') 'The module-status operation must return the installed mock version.'
+    Assert-True (@($moduleStatus.Data.InstalledVersions) -contains '2.1.396') 'The module-status operation must include the installed mock version even when a newer real module is installed.'
+    Assert-True ([string]$moduleStatus.Data.LoadedVersion -eq '2.1.396') 'The module-status operation must report the globally loaded mock separately from the newest installed version.'
     Assert-True (-not [bool]$moduleStatus.Data.OnlineChecked) 'The local module-status operation must not perform an online lookup.'
 
     $temp=Join-Path ([IO.Path]::GetTempPath()) ('QuestODMConsoleMock-'+[Guid]::NewGuid().ToString('N'))
@@ -254,7 +255,7 @@ try {
     ) | Export-Csv -LiteralPath $discoveryUpnCsv -NoTypeInformation -Encoding UTF8
     $discoverCsv=Invoke-TestOperation -Operation Bulk -Parameters @{Operation='DiscoverAccountsFromCsv';Parameters=@{TaskName="RC6 Discover CSV $runToken";CsvPath=$discoveryUpnCsv;Execute=$true;StartAfterCreate=$false;OutputDirectory=$temp}}
     Assert-True ($discoverCsv.Data.Created -and -not $discoverCsv.Data.Started) 'CSV discovery must create an unstarted task unless StartTask is explicitly selected.'
-    Assert-True ([string]$discoverCsv.Data.Validation.Format -eq 'UPN') 'Discovery UPN CSV must be recognized as the UPN Quest template.'
+    Assert-True ([string]$discoverCsv.Data.Schema -eq 'DiscoveryByUPN') 'Discovery UPN CSV must be recognized as the UPN Quest template.'
     $mockState=Get-MockOdmState
     Assert-True ([bool]$mockState.LastDiscoveryTaskParameters.DiscoverUsingCSV) 'CSV discovery must set DiscoverUsingCSV to true.'
     Assert-True ([string]$mockState.LastDiscoveryTaskParameters.FilePath -eq $discoveryUpnCsv) 'CSV discovery must pass the validated file path to the constructor.'
@@ -266,14 +267,14 @@ try {
     }) | Export-Csv -LiteralPath $mappingUpnCsv -NoTypeInformation -Encoding UTF8
     $mapping=Invoke-TestOperation -Operation Bulk -Parameters @{Operation='MapAccountsFromCsv';Parameters=@{TaskName="RC6 Mapping $runToken";CsvPath=$mappingUpnCsv;Execute=$true;StartAfterCreate=$true;OutputDirectory=$temp}}
     Assert-True ($mapping.Data.Created -and $mapping.Data.Started) 'Account mapping must create and explicitly start the mapping task.'
-    Assert-True ([string]$mapping.Data.Validation.Format -eq 'UPN') 'Mapping UPN CSV must be recognized as the UPN Quest template.'
+    Assert-True ([string]$mapping.Data.Schema -eq 'MappingByUPN') 'Mapping UPN CSV must be recognized as the UPN Quest template.'
     $mockState=Get-MockOdmState
     Assert-True ([string]$mockState.LastMappingTaskParameters.FilePath -eq $mappingUpnCsv) 'Account mapping must pass the validated mapping file path.'
 
     $mappingIdCsv=Join-Path $temp 'mapping-objectid.csv'
     @([pscustomobject]@{SourceObjectId='11111111-1111-1111-1111-111111111111';TargetObjectId='22222222-2222-2222-2222-222222222222'}) | Export-Csv -LiteralPath $mappingIdCsv -NoTypeInformation -Encoding UTF8
     $mappingIdPreview=Invoke-TestOperation -Operation Bulk -Parameters @{Operation='MapAccountsFromCsv';Parameters=@{TaskName="RC6 Mapping ID $runToken";CsvPath=$mappingIdCsv;Execute=$false;StartAfterCreate=$false;OutputDirectory=$temp}}
-    Assert-True ([string]$mappingIdPreview.Data.Validation.Format -eq 'ObjectId' -and -not $mappingIdPreview.Data.Created) 'Object-ID mapping must validate in dry-run mode without creating a task.'
+    Assert-True ([string]$mappingIdPreview.Data.Schema -eq 'MappingByObjectId' -and -not $mappingIdPreview.Data.Created) 'Object-ID mapping must validate in dry-run mode without creating a task.'
 
     $invalidMixedCsv=Join-Path $temp 'discovery-mixed.csv'
     @([pscustomobject]@{UserPrincipalName='ada@source.example';ObjectId='11111111-1111-1111-1111-111111111111';Type='user'}) | Export-Csv -LiteralPath $invalidMixedCsv -NoTypeInformation -Encoding UTF8
@@ -286,7 +287,7 @@ try {
         [pscustomobject]@{UserPrincipalName='ada@source.example';Type='user'}
     ) | Export-Csv -LiteralPath $duplicateDiscoveryCsv -NoTypeInformation -Encoding UTF8
     $duplicateDiscovery=Invoke-QOdmOperation -Operation Bulk -Parameters @{Operation='DiscoverAccountsFromCsv';Parameters=@{TaskName="Duplicate Discovery $runToken";CsvPath=$duplicateDiscoveryCsv;Execute=$false;OutputDirectory=$temp}}
-    Assert-True (-not $duplicateDiscovery.Success) 'Duplicate discovery identifiers must be rejected before task creation.'
+    Assert-True ($duplicateDiscovery.Success -and -not $duplicateDiscovery.Data.Valid -and -not $duplicateDiscovery.Data.Created -and $duplicateDiscovery.Data.Status -eq 'VALIDATION_FAILED') 'Duplicate discovery identifiers must produce an invalid-input report without creating a task.'
 
     # Account workflows must be blocked outside the Accounts workload and context must remain recoverable.
     $null=Invoke-TestOperation -Operation SelectWorkload -Parameters @{WorkloadId='workload-sharepoint'}

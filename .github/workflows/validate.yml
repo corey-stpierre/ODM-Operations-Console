@@ -35,6 +35,7 @@ jobs:
       - name: Run Python static validation
         shell: pwsh
         run: |
+          python -m pip install pygments==2.21.0
           python .\Tests\StaticValidation.py
           python .\Tests\RuntimeSourceAudit.py
           python .\MappingCollisionUtility\Tests\StaticValidation.py

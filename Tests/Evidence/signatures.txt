@@ -1,0 +1,2 @@
+SIGNATURE VALIDATION: PASS (files=47, unsigned=47)
+All 47 checked active scripts/modules are unsigned. This is a status check, not proof of signing or production approval. No certificate was used.

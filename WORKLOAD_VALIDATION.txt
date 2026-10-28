@@ -1,0 +1,1 @@
+RC1 supersedes preview.7 validation. See BUILD_VALIDATION.txt, V1_RELEASE_VALIDATION.json and Tests/Evidence for current evidence. All ten original content CSV task routes remain in the offline suite. Live service validation remains NOT_RUN.

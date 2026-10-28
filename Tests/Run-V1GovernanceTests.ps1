@@ -162,7 +162,7 @@ try {
     $historyPath = Join-Path (Join-Path $env:QUESTODMCONSOLE_DATA_ROOT 'Logs') 'OperationHistory.jsonl'
     $historyText = Get-Content -LiteralPath $historyPath -Raw -ErrorAction Stop
     Assert-True ($historyText -notmatch [regex]::Escape($secret)) 'Operation history must not contain plaintext sensitive parameters.'
-    Assert-True ($historyText -match '<redacted>') 'Operation history must mark redacted values.'
+    Assert-True ([string]($historyRows | Where-Object {$_.Operation -eq 'DefinitelyUnknown'} | Select-Object -Last 1).Parameters.Password -eq '<redacted>') 'Operation history must mark redacted values.'
 
     # Sanitized support bundle.
     $logsPath = Join-Path $env:QUESTODMCONSOLE_DATA_ROOT 'Logs'

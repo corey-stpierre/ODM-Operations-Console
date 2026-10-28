@@ -41,3 +41,8 @@ The supported per-user data root is `%LOCALAPPDATA%\QuestODMConsole`. Runtime lo
 ## Security boundary
 
 Interactive Quest authentication remains external to the repository. Tokens and credentials must never be serialized into source, settings, test fixtures, issue attachments, or release archives. Write operations remain subject to global change enablement, local execute controls, selected context, and explicit operator confirmation.
+
+
+## Active Directory workspace (RC2)
+
+`ContextMode` distinguishes Microsoft365 from organization-scoped ActiveDirectory. AD entry clears M365 project/workload selection, rotates a context epoch and resets Safe Mode. M365 selection returns to its context mode and invalidates AD previews. `Engine/ActiveDirectory.ps1` uses the fixed `Config/ActiveDirectoryCatalog.json`, loaded-module command metadata, exact primary-ID resolution, flat credential-safe snapshots, typed settings, preview binding and a journal before every write. A single `Invoke-QOdmAdNative` boundary invokes module-exported commands; offline tests replace that boundary and retain the real console logic. Mutations never retry automatically. SDK objects are passed to object-valued vendor parameters; opaque self-service IDs are passed without altering their case/encoding. Service result counts/errors are checked for self-service. Shared-profile changes and returned job/workflow IDs require operator readback. AD readiness leaves tenant prerequisites unverified and skips M365-specific context/subscription checks.

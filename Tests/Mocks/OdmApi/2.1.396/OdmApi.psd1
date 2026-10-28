@@ -6,6 +6,7 @@
     Description = 'Offline OdmApi contract mock for Quest ODM Console regression tests.'
     PowerShellVersion = '5.1'
     FunctionsToExport = @(
+        'Set-MockContentScenario','New-OdmTeamsProvisionTask','New-OdmTeamsMigrationTask','New-OdmTeamsCollectStatisticsTask','New-OdmTeamsGroupsProvisionTask','New-OdmTeamsGroupMigrationTask','New-OdmTeamsChatMigrationTask','New-OdmSPMigrationTask','New-OdmSPDiscoverSharePointContentsTask','New-OdmPbiProvisionWorkspacesTask','New-OdmPbiMigrateWorkspacesTask',
         'Connect-OdmService','Disconnect-OdmService','Get-OdmOrganizations','Get-OdmActiveOrganizations','Select-OdmOrganization',
         'Set-MockOrganizationMode','Get-OdmProject','Select-OdmProject','Get-OdmProjectWorkload','Select-OdmProjectWorkload',
         'Get-OdmObject','Get-OdmTask','Get-OdmCollection','Get-OdmTaskTemplates',

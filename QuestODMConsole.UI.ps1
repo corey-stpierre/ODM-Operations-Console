@@ -496,7 +496,7 @@ function New-UiEmergencySupportBundle {
         if (-not [string]::IsNullOrWhiteSpace($ErrorText)) { $ErrorText | Set-Content -LiteralPath (Join-Path $temp 'Error.txt') -Encoding UTF8 }
         @"
 Created: $(Get-Date -Format o)
-Console: 1.1.0-preview.6
+Console: 1.1.0-rc.2
 PowerShell: $($PSVersionTable.PSVersion) $($PSVersionTable.PSEdition)
 Process bitness: $([Environment]::Is64BitProcess)
 Data root: $script:DataRoot
@@ -1284,6 +1284,7 @@ function Set-UiSafeModeState {
 
 function Get-UiActiveContextText {
     $context = $script:State.Context
+    if ([string](Get-ObjectPropertyValue $context @('ContextMode')) -eq 'ActiveDirectory') { return "Active Directory / devices`r`nOrganization: $([string](Get-ObjectPropertyValue $context @('OrganizationName'))) [$([string](Get-ObjectPropertyValue $context @('OrganizationId')))]`r`nRegion: $([string](Get-ObjectPropertyValue $context @('Region')))" }
     return @(
         "Organization: $([string](Get-ObjectPropertyValue -InputObject $context -Names @('OrganizationName'))) [$([string](Get-ObjectPropertyValue -InputObject $context -Names @('OrganizationId')))]",
         "Project:      $([string](Get-ObjectPropertyValue -InputObject $context -Names @('ProjectName'))) [$([string](Get-ObjectPropertyValue -InputObject $context -Names @('ProjectId')))]",
@@ -1299,7 +1300,7 @@ function Invoke-UiSafeModeToggle {
         Invoke-EngineAsync -Operation 'SetSafeMode' -Parameters @{Enabled=$true;Reason='Safe Mode enabled by the operator.'} -Status 'Enabling Safe Mode…' -OnSuccess { param($data); Set-UiSafeModeState -SafeModeState $data; Write-UiLog -Message 'Safe Mode enabled.' -Level SUCCESS }
         return
     }
-    if (-not $script:State.WorkloadSelected) { Show-UiMessage -Text 'Connect and open a workload before enabling changes.' -Type Warning; return }
+    if (-not $script:State.WorkloadSelected -and ([string](Get-ObjectPropertyValue $script:State.Context @('ContextMode')) -ne 'ActiveDirectory')) { Show-UiMessage -Text 'Connect and open a workload or the Active Directory workspace before enabling changes.' -Type Warning; return }
     try { Add-Type -AssemblyName Microsoft.VisualBasic -ErrorAction Stop }
     catch { Show-UiMessage -Text "Microsoft.VisualBasic could not be loaded for the confirmation prompt: $($_.Exception.Message)" -Type Error; return }
     $contextText = Get-UiActiveContextText
@@ -1378,11 +1379,327 @@ function Get-UiBulkWriteFeature {
     }
 }
 
+function Reset-ManagementPreview {
+    $script:State['ManagementPreviewToken']=''
+    (Get-UiControl 'ManagementExecuteCheckBox').IsChecked=$false
+    Update-UiEnablement
+}
+function Invoke-ManagementFromUi {
+    param([bool]$Execute=$false)
+    $action=[string](Get-UiControl 'ManagementActionCombo').SelectedValue
+    $p=@{Action=$action;Id=[string](Get-UiControl 'ManagementIdBox').Text;Name=[string](Get-UiControl 'ManagementNameBox').Text;FilePath=[string](Get-UiControl 'ManagementFileBox').Text;Execute=$Execute;PreviewToken=[string](Get-ObjectPropertyValue $script:State @('ManagementPreviewToken'));OutputDirectory=$script:ReportsPath}
+    if($Execute){
+        if(-not [bool](Get-UiControl 'ManagementExecuteCheckBox').IsChecked){return}
+        if(-not (Confirm-UiAction -Title 'Confirm management action' -Text ("Apply $action to ID '$($p.Id)' in workload '$([string](Get-ObjectPropertyValue $script:State.Context @('WorkloadId')))'?`r`n`r`nReview the preview. A partial failure is not rolled back; inspect Quest before retrying."))){return}
+    }
+    Invoke-EngineAsync -Operation 'Management' -Parameters $p -Status 'Validating management action...' -OnSuccess {
+        param($data)
+        $script:State['ManagementPreviewToken']=[string]$data.PreviewToken
+        (Get-UiControl 'ManagementResultBox').Text=$data.Plan|ConvertTo-Json -Depth 25
+        if(-not $data.PreviewToken){(Get-UiControl 'ManagementExecuteCheckBox').IsChecked=$false}
+        Update-UiEnablement
+    } -OnFailure {param($result) Reset-ManagementPreview}
+}
+function Initialize-ManagementUi {
+    $script:State['ManagementPreviewToken']=''
+    (Get-UiControl 'ManagementKindCombo').ItemsSource=@('Templates','Reports','Events','Tasks','Collections');(Get-UiControl 'ManagementKindCombo').SelectedIndex=0
+    (Get-UiControl 'ManagementActionCombo').ItemsSource=@(
+        [pscustomobject]@{Name='Rename collection (collection ID + new name)';Key='RenameCollection'}
+        [pscustomobject]@{Name='Save task as template (task ID + template name)';Key='SaveTaskTemplate'}
+        [pscustomobject]@{Name='Import templates (Quest JSON file)';Key='ImportTemplates'}
+        [pscustomobject]@{Name='Export template (template ID)';Key='ExportTemplate'}
+        [pscustomobject]@{Name='Acknowledge current event (event ID)';Key='AcknowledgeEvent'}
+    );(Get-UiControl 'ManagementActionCombo').SelectedIndex=0
+    (Get-UiControl 'ManagementLoadButton').Add_Click({
+        Invoke-EngineAsync -Operation 'ManagementView' -Parameters @{Kind=[string](Get-UiControl 'ManagementKindCombo').SelectedItem} -Status 'Loading management inventory...' -OnSuccess {param($data) Set-GridItems -Grid (Get-UiControl 'ManagementGrid') -Items (ConvertTo-UiObjectArray $data.Rows);(Get-UiControl 'ManagementResultBox').Text=$data.Note}
+    })
+    (Get-UiControl 'ManagementGrid').Add_SelectionChanged({$row=Get-SelectedGridItem (Get-UiControl 'ManagementGrid');if($row){(Get-UiControl 'ManagementIdBox').Text=[string]$row.Id}})
+    (Get-UiControl 'ManagementActionCombo').Add_SelectionChanged({Reset-ManagementPreview})
+    foreach($box in @('ManagementIdBox','ManagementNameBox','ManagementFileBox')){(Get-UiControl $box).Add_TextChanged({Reset-ManagementPreview})}
+    (Get-UiControl 'ManagementBrowseButton').Add_Click({$dialog=New-Object Microsoft.Win32.OpenFileDialog;$dialog.Filter='Quest template JSON (*.json)|*.json';if($dialog.ShowDialog($script:Window)){(Get-UiControl 'ManagementFileBox').Text=$dialog.FileName}})
+    (Get-UiControl 'ManagementPreviewButton').Add_Click({Invoke-ManagementFromUi -Execute $false})
+    (Get-UiControl 'ManagementApplyButton').Add_Click({Invoke-ManagementFromUi -Execute $true})
+    (Get-UiControl 'ManagementExecuteCheckBox').Add_Checked({Update-UiEnablement})
+    (Get-UiControl 'ManagementExecuteCheckBox').Add_Unchecked({Update-UiEnablement})
+}
+
+function Reset-AdPreview {
+    $script:State['AdPreviewToken']=''
+    (Get-UiControl 'AdExecuteCheckBox').IsChecked=$false
+    Update-UiEnablement
+}
+
+function Clear-AdUi {
+    $script:State['AdPreviewToken']='';$script:State['AdDefinition']=$null;$script:State['AdFields']=@{}
+    (Get-UiControl 'AdExecuteCheckBox').IsChecked=$false
+    (Get-UiControl 'AdFieldsPanel').Children.Clear()
+    (Get-UiControl 'AdCommandCombo').ItemsSource=@()
+    (Get-UiControl 'AdInventoryKindCombo').ItemsSource=@()
+    (Get-UiControl 'AdGrid').ItemsSource=@()
+    foreach($name in @('AdTargetIdsBox','AdCsvBox','AdIdBox','AdParentIdBox','AdFilterBox')){(Get-UiControl $name).Text=''}
+    (Get-UiControl 'AdDescriptionText').Text='Select an organization and open this workspace. A Microsoft 365 project is not required. Use Guides for prerequisites and CSV formats.'
+    (Get-UiControl 'AdResultBox').Text='Preview resolves every exact target and reference again before submission. No AD action is submitted by Preview.'
+    (Get-UiControl 'AdDetailsBox').Text='Select an inventory row to view its safe details.'
+}
+
+function Show-AdDefinition {
+    param([object]$Definition)
+    $script:State['AdDefinition']=$Definition;$script:State['AdFields']=@{}
+    $panel=Get-UiControl 'AdFieldsPanel';$panel.Children.Clear()
+    foreach($field in $Definition.Fields){
+        $block=New-Object Windows.Controls.StackPanel;$block.Margin='0,0,0,12'
+        $label=New-Object Windows.Controls.TextBlock;$label.Text=$field.Name+$(if($field.Required){' (required)'}else{' (optional)'});$label.FontWeight='SemiBold';$label.TextWrapping='Wrap'
+        $block.Children.Add($label)|Out-Null
+        $control=if($field.Kind -eq 'Choice'){New-Object Windows.Controls.ComboBox}else{New-Object Windows.Controls.TextBox}
+        if($field.Kind -eq 'Choice'){$control.ItemsSource=@('Not supplied')+@($field.Choices);$control.SelectedIndex=0;$control.Add_SelectionChanged({Reset-AdPreview})}
+        else{$control.Add_TextChanged({Reset-AdPreview});if($field.Kind -eq 'Lines'){$control.AcceptsReturn=$true;$control.MinHeight=70;$control.VerticalScrollBarVisibility='Auto'}}
+        $control.ToolTip=$field.Description;$block.Children.Add($control)|Out-Null
+        $hint=New-Object Windows.Controls.TextBlock;$hint.Text=$field.Description;$hint.TextWrapping='Wrap';$hint.FontSize=11;$hint.Margin='0,3,0,0';$block.Children.Add($hint)|Out-Null
+        $panel.Children.Add($block)|Out-Null
+        $script:State.AdFields[$field.Name]=[pscustomobject]@{Field=$field;Control=$control}
+    }
+    (Get-UiControl 'AdDescriptionText').Text=$Definition.Name+' | Targets: '+$Definition.TargetKind+' | '+$Definition.Risk+'. Blank optional fields are omitted. Actions may run immediately. '+$(if($Definition.UnsupportedParameters.Count){'Use Quest web console for: '+($Definition.UnsupportedParameters -join ', ')}else{''})
+    # Different actions can target different object types. Never carry target IDs across a selection.
+    (Get-UiControl 'AdTargetIdsBox').Text='';(Get-UiControl 'AdCsvBox').Text=''
+    Reset-AdPreview
+}
+
+function Invoke-AdActionFromUi {
+    param([bool]$Execute=$false)
+    $definition=Get-ObjectPropertyValue $script:State @('AdDefinition')
+    if(-not $definition){return}
+    $values=@{}
+    foreach($name in $script:State.AdFields.Keys){
+        $entry=$script:State.AdFields[$name]
+        if($entry.Field.Kind -eq 'Choice'){if($entry.Control.SelectedIndex -gt 0){$values[$name]=[string]$entry.Control.SelectedItem}}
+        elseif(-not [string]::IsNullOrWhiteSpace($entry.Control.Text)){$values[$name]=[string]$entry.Control.Text}
+    }
+    $p=@{CommandName=$definition.Command;TargetIds=[string](Get-UiControl 'AdTargetIdsBox').Text;CsvPath=[string](Get-UiControl 'AdCsvBox').Text;Values=$values;Execute=$Execute;Acknowledged=[bool](Get-UiControl 'AdExecuteCheckBox').IsChecked;PreviewToken=[string](Get-ObjectPropertyValue $script:State @('AdPreviewToken'));OutputDirectory=$script:ReportsPath}
+    if($Execute){
+        if(-not $p.Acknowledged){return}
+        Add-Type -AssemblyName Microsoft.VisualBasic
+        $p.ConfirmationText=[Microsoft.VisualBasic.Interaction]::InputBox("$($definition.Name)`r`n$(Get-UiActiveContextText)`r`n`r`nReview all targets, settings and prerequisites in the preview. This may start immediately; shared profile changes affect all associated devices. No automatic rollback.`r`n`r`nEnter APPLY AD ACTION to submit.",'Apply Active Directory action','')
+        if(-not $p.ConfirmationText){return}
+    }
+    Invoke-EngineAsync -Operation 'AdAction' -Parameters $p -Status 'Validating AD targets, references and settings...' -OnSuccess {
+        param($data)
+        $script:State['AdPreviewToken']=[string]$data.PreviewToken
+        (Get-UiControl 'AdResultBox').Text=$data.Plan|ConvertTo-Json -Depth 20
+        if(-not $data.PreviewToken){(Get-UiControl 'AdExecuteCheckBox').IsChecked=$false}
+        Update-UiEnablement
+    } -OnFailure {param($result) Reset-AdPreview}
+}
+
+function Initialize-AdUi {
+    Clear-AdUi
+    (Get-UiControl 'AdOpenButton').Add_Click({
+        Invoke-EngineAsync -Operation 'OpenActiveDirectory' -Status 'Opening the organization Active Directory workspace...' -OnSuccess {
+            param($data)
+            Clear-WorkloadDataUi
+            Apply-ContextState $data.State
+            (Get-UiControl 'AdInventoryKindCombo').ItemsSource=@($data.Catalog.Inventories);(Get-UiControl 'AdInventoryKindCombo').SelectedIndex=0
+            (Get-UiControl 'AdCommandCombo').ItemsSource=@($data.Catalog.Operations)
+            (Get-UiControl 'AdDescriptionText').Text='Active Directory workspace: '+$data.State.OrganizationName+' ['+$data.State.OrganizationId+']. Safe Mode is on. Select an inventory or action; read Guides before your pilot.'
+            Update-UiEnablement
+        }
+    })
+    (Get-UiControl 'AdCommandCombo').Add_SelectionChanged({
+        Reset-AdPreview
+        $selected=(Get-UiControl 'AdCommandCombo').SelectedItem
+        $script:State['AdDefinition']=$null;(Get-UiControl 'AdFieldsPanel').Children.Clear()
+        if(-not $selected){return}
+        if(-not $selected.Available){(Get-UiControl 'AdDescriptionText').Text=$selected.AvailabilityNote;Update-UiEnablement;return}
+        Invoke-EngineAsync -Operation 'AdDefinition' -Parameters @{CommandName=$selected.Command} -Status 'Loading AD action fields...' -OnSuccess {param($data) Show-AdDefinition $data}
+    })
+    (Get-UiControl 'AdLoadButton').Add_Click({
+        $selected=(Get-UiControl 'AdInventoryKindCombo').SelectedItem
+        if(-not $selected){return}
+        $limit=0;if(-not [int]::TryParse([string](Get-UiControl 'AdLimitBox').Text,[ref]$limit)){Show-UiMessage -Text 'Limit must be a number from 1 to 100000.' -Type Warning;return}
+        Invoke-EngineAsync -Operation 'AdInventory' -Parameters @{Kind=$selected.Kind;Id=[string](Get-UiControl 'AdIdBox').Text;ParentId=[string](Get-UiControl 'AdParentIdBox').Text;Filter=[string](Get-UiControl 'AdFilterBox').Text;Limit=$limit} -Status 'Loading bounded AD inventory...' -OnSuccess {param($data) Set-GridItems -Grid (Get-UiControl 'AdGrid') -Items (ConvertTo-UiObjectArray $data.Rows);(Get-UiControl 'AdDetailsBox').Text=$data.Note}
+    })
+    (Get-UiControl 'AdInventoryKindCombo').Add_SelectionChanged({
+        (Get-UiControl 'AdGrid').ItemsSource=@();(Get-UiControl 'AdIdBox').Text='';(Get-UiControl 'AdParentIdBox').Text='';(Get-UiControl 'AdFilterBox').Text=''
+        $kind=(Get-UiControl 'AdInventoryKindCombo').SelectedItem
+        if($kind){(Get-UiControl 'AdDetailsBox').Text=$kind.AvailabilityNote+$(if($kind.ParentKind){' Parent ID must be an exact '+$kind.ParentKind+' ID.'}else{' Exact ID takes precedence; clear filters when using it.'})}
+    })
+    (Get-UiControl 'AdGrid').Add_SelectionChanged({$row=Get-SelectedGridItem (Get-UiControl 'AdGrid');if($row){(Get-UiControl 'AdDetailsBox').Text=($row.Details|ConvertFrom-Json|ConvertTo-Json -Depth 6)}})
+    (Get-UiControl 'AdCopyButton').Add_Click({
+        $rows=@(Get-SelectedGridItems (Get-UiControl 'AdGrid'))
+        $ids=@($rows|ForEach-Object {$_.TargetId}|Where-Object {$_}) -join "`r`n"
+        if($ids){[Windows.Clipboard]::SetText($ids)}
+        $definition=Get-ObjectPropertyValue $script:State @('AdDefinition')
+        if($ids -and $definition -and @($rows|Where-Object {$_.Kind -ne $definition.TargetKind}).Count -eq 0){(Get-UiControl 'AdCsvBox').Text='';(Get-UiControl 'AdTargetIdsBox').Text=$ids}
+    })
+    (Get-UiControl 'AdExportButton').Add_Click({
+        $rows=ConvertTo-UiObjectArray (Get-UiControl 'AdGrid').ItemsSource;if(-not $rows.Count){return}
+        $dialog=New-Object Microsoft.Win32.SaveFileDialog;$dialog.Filter='CSV files (*.csv)|*.csv';$dialog.FileName='QuestADInventory.csv'
+        if($dialog.ShowDialog($script:Window)){$rows|Export-Csv -LiteralPath $dialog.FileName -NoTypeInformation -Encoding UTF8}
+    })
+    (Get-UiControl 'AdBrowseButton').Add_Click({$dialog=New-Object Microsoft.Win32.OpenFileDialog;$dialog.Filter='CSV files (*.csv)|*.csv';if($dialog.ShowDialog($script:Window)){(Get-UiControl 'AdTargetIdsBox').Text='';(Get-UiControl 'AdCsvBox').Text=$dialog.FileName}})
+    foreach($name in @('AdTargetIdsBox','AdCsvBox')){(Get-UiControl $name).Add_TextChanged({Reset-AdPreview})}
+    (Get-UiControl 'AdPreviewButton').Add_Click({Invoke-AdActionFromUi})
+    (Get-UiControl 'AdApplyButton').Add_Click({Invoke-AdActionFromUi -Execute $true})
+    (Get-UiControl 'AdExecuteCheckBox').Add_Checked({Update-UiEnablement});(Get-UiControl 'AdExecuteCheckBox').Add_Unchecked({Update-UiEnablement})
+    (Get-UiControl 'AdPortalButton').Add_Click({Start-Process 'https://quest-on-demand.com/'})
+}
+
+
+function Reset-OperationsPreview {
+    $script:State['OperationsPreviewToken']=''
+    (Get-UiControl 'OperationsExecuteCheckBox').IsChecked=$false
+    Update-UiEnablement
+}
+
+function Show-OperationsDefinition {
+    param([object]$Definition)
+    $script:State['OperationsDefinition']=$Definition
+    $script:State['OperationsFields']=@{}
+    $panel=Get-UiControl 'OperationsFieldsPanel';$panel.Children.Clear()
+    foreach($field in $Definition.Fields){
+        $block=New-Object Windows.Controls.StackPanel
+        $block.Margin='0,0,0,12'
+        $label=New-Object Windows.Controls.TextBlock
+        $label.Text=$field.Name + $(if($field.Required){' (required)'}else{' (optional)'})
+        $label.FontWeight='SemiBold';$label.TextWrapping='Wrap'
+        $block.Children.Add($label)|Out-Null
+        $control=if($field.Kind -eq 'Secret'){New-Object Windows.Controls.PasswordBox}elseif($field.Kind -eq 'Choice'){New-Object Windows.Controls.ComboBox}else{New-Object Windows.Controls.TextBox}
+        if($field.Kind -eq 'Choice'){$control.ItemsSource=@($(if($Definition.Mode -eq 'Update'){'Leave unchanged'}else{'Use Quest default'}))+@($field.Choices);$control.SelectedIndex=0;$control.Add_SelectionChanged({Reset-OperationsPreview})}
+        elseif($field.Kind -eq 'Secret'){$control.Add_PasswordChanged({Reset-OperationsPreview})}
+        else{$control.Add_TextChanged({Reset-OperationsPreview})}
+        $control.MinHeight=28;$control.HorizontalAlignment='Stretch'
+        $control.ToolTip=$field.Description
+        $block.Children.Add($control)|Out-Null
+        $hint=New-Object Windows.Controls.TextBlock
+        $hint.Text='Default: '+$(if($field.Default){$field.Default}else{'not supplied'})+'. '+$field.Description
+        $hint.TextWrapping='Wrap';$hint.FontSize=11;$hint.Margin='0,3,0,0'
+        $block.Children.Add($hint)|Out-Null
+        $panel.Children.Add($block)|Out-Null
+        $script:State.OperationsFields[$field.Name]=[pscustomobject]@{Field=$field;Control=$control}
+    }
+    (Get-UiControl 'OperationsDescriptionText').Text=$Definition.Name+' | '+$Definition.Risk+' | '+$(if($Definition.Mode -eq 'Update'){'Only supplied fields change. Scheduling can start a task automatically. Review before applying.'}else{'New tasks remain held. Blank fields keep Quest defaults. Review before creating.'})
+    (Get-UiControl 'OperationsCreateButton').Content=if($Definition.Mode -eq 'Update'){'Apply task update'}else{'Create held task'}
+    (Get-UiControl 'OperationsMemberIdsBox').IsEnabled=[bool]$Definition.SupportsMembers
+    (Get-UiControl 'OperationsMemberIdsBox').Text=''
+    (Get-UiControl 'OperationsScopeCheckBox').IsChecked=$false
+    Reset-OperationsPreview
+}
+
+function Invoke-OperationsTaskFromUi {
+    param([bool]$Execute=$false)
+    $definition=Get-ObjectPropertyValue $script:State @('OperationsDefinition')
+    if(-not $definition){Show-UiMessage -Text 'Load and select an operation first.' -Type Warning;return}
+    $values=@{}
+    foreach($name in $script:State.OperationsFields.Keys){
+        $entry=$script:State.OperationsFields[$name];$control=$entry.Control
+        if($entry.Field.Kind -eq 'Choice'){if($control.SelectedIndex -gt 0){$values[$name]=[string]$control.SelectedItem}}
+        elseif($entry.Field.Kind -eq 'Secret'){if($control.Password){$values[$name]=[string]$control.Password}}
+        elseif(-not [string]::IsNullOrWhiteSpace($control.Text)){$values[$name]=[string]$control.Text}
+    }
+    $p=@{CommandName=$definition.Command;Values=$values;MemberIds=[string](Get-UiControl 'OperationsMemberIdsBox').Text;MemberKind=[string](Get-UiControl 'OperationsInventoryKindCombo').SelectedItem;ScopeAcknowledged=[bool](Get-UiControl 'OperationsScopeCheckBox').IsChecked;Execute=$Execute;PreviewToken=[string](Get-ObjectPropertyValue $script:State @('OperationsPreviewToken'));OutputDirectory=$script:ReportsPath}
+    if($Execute){
+        if(-not [bool](Get-UiControl 'OperationsExecuteCheckBox').IsChecked){return}
+        $context=$script:State.Context
+        $message="Apply this Quest operation?`r`nOperation: $($definition.Name)`r`nRisk: $($definition.Risk)`r`nWorkload: $([string](Get-ObjectPropertyValue $context @('WorkloadName'))) [$([string](Get-ObjectPropertyValue $context @('WorkloadId')))]`r`n`r`nReview the preview, defaults, and object scope. New tasks are held. Updates preserve an existing schedule unless changed; a supplied future schedule starts the task automatically. Inspect the task and report before any retry."
+        if(-not (Confirm-UiAction -Text $message -Title 'Confirm Quest operation')){return}
+    }
+    Invoke-EngineAsync -Operation 'OperationsTask' -Parameters $p -Status 'Validating operation and input files...' -OnSuccess {
+        param($data)
+        $script:State['OperationsPreviewToken']=[string]$data.PreviewToken
+        (Get-UiControl 'OperationsResultBox').Text=($data.Plan|ConvertTo-Json -Depth 30)
+        if(-not $data.PreviewToken){
+            (Get-UiControl 'OperationsExecuteCheckBox').IsChecked=$false
+            foreach($entry in $script:State.OperationsFields.Values){if($entry.Field.Kind -eq 'Secret'){$entry.Control.Clear()}}
+        }
+        Update-UiEnablement
+    } -OnFailure {param($result) Reset-OperationsPreview}
+}
+
+function Initialize-OperationsCenterUi {
+    $script:State['OperationsPreviewToken']='';$script:State['OperationsDefinition']=$null;$script:State['OperationsFields']=@{}
+    (Get-UiControl 'OperationsInventoryKindCombo').ItemsSource=@('Default','Teams','Groups','Chats','Workspaces','Gateways','Connections','Profiles','Environments','Apps','Solutions','Flows','Dataflows')
+    (Get-UiControl 'OperationsInventoryKindCombo').SelectedIndex=0
+    (Get-UiControl 'OperationsLoadButton').Add_Click({
+        Reset-OperationsPreview
+        Invoke-EngineAsync -Operation 'OperationsCatalog' -Status 'Checking supported workload operations...' -OnSuccess {
+            param($data)
+            Set-ComboItems -Combo (Get-UiControl 'OperationsCommandCombo') -Items (ConvertTo-UiObjectArray $data)
+            (Get-UiControl 'OperationsDescriptionText').Text='Select an operation. Unavailable commands remain visible with their reason.'
+        }
+    })
+    (Get-UiControl 'OperationsCommandCombo').Add_SelectionChanged({
+        Reset-OperationsPreview
+        $selected=(Get-UiControl 'OperationsCommandCombo').SelectedItem
+        if(-not $selected){return}
+        if(-not $selected.Available){(Get-UiControl 'OperationsDescriptionText').Text=$selected.Details;$script:State['OperationsDefinition']=$null;return}
+        Invoke-EngineAsync -Operation 'OperationsDefinition' -Parameters @{CommandName=$selected.Command} -Status 'Loading operation fields and help...' -OnSuccess {param($data) Show-OperationsDefinition $data}
+    })
+    (Get-UiControl 'OperationsPreviewButton').Add_Click({Invoke-OperationsTaskFromUi -Execute $false})
+    (Get-UiControl 'OperationsCreateButton').Add_Click({Invoke-OperationsTaskFromUi -Execute $true})
+    (Get-UiControl 'OperationsExecuteCheckBox').Add_Checked({Update-UiEnablement})
+    (Get-UiControl 'OperationsExecuteCheckBox').Add_Unchecked({Update-UiEnablement})
+    (Get-UiControl 'OperationsMemberIdsBox').Add_TextChanged({Reset-OperationsPreview})
+    (Get-UiControl 'OperationsScopeCheckBox').Add_Checked({Reset-OperationsPreview})
+    (Get-UiControl 'OperationsScopeCheckBox').Add_Unchecked({Reset-OperationsPreview})
+    (Get-UiControl 'OperationsInventoryKindCombo').Add_SelectionChanged({Reset-OperationsPreview})
+    (Get-UiControl 'OperationsInventoryButton').Add_Click({
+        Invoke-EngineAsync -Operation 'OperationsInventory' -Parameters @{Kind=[string](Get-UiControl 'OperationsInventoryKindCombo').SelectedItem} -Status 'Loading selected workload inventory...' -OnSuccess {param($data) Set-GridItems -Grid (Get-UiControl 'OperationsInventoryGrid') -Items (ConvertTo-UiObjectArray $data.Rows)}
+    })
+    (Get-UiControl 'OperationsUseIdsButton').Add_Click({
+        $rows=Get-SelectedGridItems (Get-UiControl 'OperationsInventoryGrid')
+        $ids=@($rows|ForEach-Object {$_.ObjectId}) -join ','
+        if(-not $ids){return}
+        [Windows.Clipboard]::SetText($ids)
+        (Get-UiControl 'OperationsMemberIdsBox').Text=$ids
+    })
+    (Get-UiControl 'OperationsExportButton').Add_Click({
+        $rows=ConvertTo-UiObjectArray (Get-UiControl 'OperationsInventoryGrid').ItemsSource
+        if(-not $rows.Count){return}
+        $dialog=New-Object Microsoft.Win32.SaveFileDialog;$dialog.Filter='CSV files (*.csv)|*.csv';$dialog.FileName='QuestInventory.csv'
+        if($dialog.ShowDialog($script:Window)){$rows|Export-Csv -LiteralPath $dialog.FileName -NoTypeInformation -Encoding UTF8}
+    })
+    $guides=Get-Content -LiteralPath (Join-Path $script:AppRoot 'Config\OperatorGuides.json') -Raw | ConvertFrom-Json
+    (Get-UiControl 'GuideTopicCombo').ItemsSource=@($guides)
+    (Get-UiControl 'GuideTopicCombo').Add_SelectionChanged({$topic=(Get-UiControl 'GuideTopicCombo').SelectedItem;if($topic){(Get-UiControl 'GuideTextBox').Text=$topic.Text}})
+    (Get-UiControl 'GuideTopicCombo').SelectedIndex=0
+    (Get-UiControl 'GuideSamplesButton').Add_Click({Start-Process -FilePath explorer.exe -ArgumentList ('"'+(Join-Path $script:AppRoot 'Samples')+'"')})
+    (Get-UiControl 'GuidePortalButton').Add_Click({Start-Process 'https://quest-on-demand.com/'})
+    (Get-UiControl 'GuideDocsButton').Add_Click({Start-Process 'https://support.quest.com/technical-documents/on-demand-migration/current/user-guide'})
+}
+
 function Update-UiEnablement {
     $notBusy = -not $script:State.Busy
     $connected = $script:State.Connected -and $notBusy
     $workload = $script:State.WorkloadSelected -and $notBusy
+    $adMode=([string](Get-ObjectPropertyValue $script:State.Context @('ContextMode')) -eq 'ActiveDirectory')
+    $adReady=$connected -and $adMode -and [bool](Get-ObjectPropertyValue $script:State.Context @('ContextValid') $true)
+    (Get-UiControl 'AdOpenButton').IsEnabled=$connected -and [bool](Get-ObjectPropertyValue $script:State.Context @('OrganizationId'))
+    foreach($name in @('AdInventoryKindCombo','AdLoadButton','AdIdBox','AdParentIdBox','AdFilterBox','AdLimitBox','AdGrid','AdCopyButton','AdExportButton','AdCommandCombo','AdTargetIdsBox','AdCsvBox','AdBrowseButton','AdFieldsPanel','AdExecuteCheckBox')){(Get-UiControl $name).IsEnabled=$adReady}
+    (Get-UiControl 'AdPreviewButton').IsEnabled=$adReady -and [bool](Get-ObjectPropertyValue $script:State @('AdDefinition'))
+    (Get-UiControl 'AdApplyButton').IsEnabled=$adReady -and (-not $script:State.SafeMode) -and [bool](Get-ObjectPropertyValue $script:State @('AdPreviewToken')) -and [bool](Get-UiControl 'AdExecuteCheckBox').IsChecked -and (Test-UiFeatureAllowed -Feature 'ActiveDirectory')
     $changesEnabled = $workload -and (-not $script:State.SafeMode)
+    foreach($managementControl in @('ManagementKindCombo','ManagementLoadButton','ManagementGrid','ManagementActionCombo','ManagementIdBox','ManagementNameBox','ManagementFileBox','ManagementBrowseButton','ManagementPreviewButton','ManagementExecuteCheckBox')){(Get-UiControl $managementControl).IsEnabled=$workload}
+    $managementToken=[string](Get-ObjectPropertyValue $script:State @('ManagementPreviewToken'))
+    $exportOnly=([string](Get-UiControl 'ManagementActionCombo').SelectedValue -eq 'ExportTemplate')
+    (Get-UiControl 'ManagementApplyButton').IsEnabled=$workload -and [bool]$managementToken -and [bool](Get-UiControl 'ManagementExecuteCheckBox').IsChecked -and ($exportOnly -or ($changesEnabled -and (Test-UiFeatureAllowed -Feature 'OperationsCenter')))
+    $operationsDefinition=Get-ObjectPropertyValue $script:State @('OperationsDefinition')
+    $operationsPreview=[string](Get-ObjectPropertyValue $script:State @('OperationsPreviewToken'))
+    (Get-UiControl 'OperationsLoadButton').IsEnabled=$workload
+    (Get-UiControl 'OperationsCommandCombo').IsEnabled=$workload
+    (Get-UiControl 'OperationsPreviewButton').IsEnabled=$workload -and ($null -ne $operationsDefinition)
+    (Get-UiControl 'OperationsCreateButton').IsEnabled=$changesEnabled -and [bool]$operationsPreview -and [bool](Get-UiControl 'OperationsExecuteCheckBox').IsChecked -and (Test-UiFeatureAllowed -Feature 'OperationsCenter')
+    foreach($opsControl in @('OperationsFieldsPanel','OperationsScopeCheckBox','OperationsExecuteCheckBox','OperationsInventoryKindCombo','OperationsInventoryButton','OperationsUseIdsButton','OperationsExportButton')){(Get-UiControl $opsControl).IsEnabled=$workload}
+    (Get-UiControl 'OperationsMemberIdsBox').IsEnabled=$workload -and [bool](Get-ObjectPropertyValue $operationsDefinition @('SupportsMembers') -Default $false)
+    $contentType = [string](Get-ObjectPropertyValue -InputObject $script:State.Context -Names @('WorkloadType'))
+    $contentWorkload = $workload -and ($contentType -match '^(Teams|mst|SharePoint|spm|PowerBi|pbi)$')
+    $contentReady = $contentWorkload -and ((Get-UiControl 'ContentObjectKindCombo').SelectedIndex -ge 0)
+    $contentAction = [string]((Get-UiControl 'ContentActionCombo').SelectedItem).Tag
+    (Get-UiControl 'ContentLoadOptionsButton').IsEnabled = $contentWorkload
+    (Get-UiControl 'ContentInventoryButton').IsEnabled = $contentReady
+    (Get-UiControl 'ContentPreviewButton').IsEnabled = $contentReady
+    (Get-UiControl 'ContentExecuteButton').IsEnabled = $contentReady -and $changesEnabled -and [bool](Get-UiControl 'ContentExecuteCheckBox').IsChecked -and (Test-UiFeatureAllowed -Feature 'Membership') -and ($contentAction -ne 'Tasks' -or (Test-UiFeatureAllowed -Feature 'ContentTasks'))
+    foreach ($contentControl in @('ContentObjectKindCombo','ContentTaskKindCombo','ContentActionCombo','ContentCsvPathBox','ContentBrowseButton','ContentTemplateBox','ContentAdminBox','ContentLinkCheckBox','ContentExecuteCheckBox','ContentExportButton')) {
+        (Get-UiControl $contentControl).IsEnabled = $notBusy
+    }
     $membershipChanges = $changesEnabled -and (Test-UiFeatureAllowed -Feature 'Membership')
     $taskLifecycleChanges = $changesEnabled -and (Test-UiFeatureAllowed -Feature 'TaskLifecycle')
     $taskFactoryChanges = $changesEnabled -and (Test-UiFeatureAllowed -Feature 'TaskFactory')
@@ -1394,7 +1711,7 @@ function Update-UiEnablement {
     (Get-UiControl 'DisconnectButton').IsEnabled = $connected
     (Get-UiControl 'RefreshWorkspaceButton').IsEnabled = $workload
     (Get-UiControl 'OverviewRefreshButton').IsEnabled = $workload
-    (Get-UiControl 'ToggleSafeModeButton').IsEnabled = $notBusy -and (($script:State.WorkloadSelected -and $script:State.Connected) -or (-not $script:State.SafeMode))
+    (Get-UiControl 'ToggleSafeModeButton').IsEnabled = $notBusy -and ((($script:State.WorkloadSelected -or $adReady) -and $script:State.Connected) -or (-not $script:State.SafeMode))
 
     (Get-UiControl 'OrganizationCombo').IsEnabled = $connected
     (Get-UiControl 'SelectOrganizationButton').IsEnabled = $connected
@@ -2084,8 +2401,40 @@ function Set-OverviewRefreshFailed {
     Show-OverviewSnapshot -Snapshot $snapshot
 }
 
+function Clear-OperationsUi {
+    Clear-AdUi
+    $script:State['ManagementPreviewToken']=''
+    (Get-UiControl 'ManagementExecuteCheckBox').IsChecked=$false
+    (Get-UiControl 'ManagementIdBox').Text=''
+    (Get-UiControl 'ManagementNameBox').Text=''
+    (Get-UiControl 'ManagementFileBox').Text=''
+    (Get-UiControl 'ManagementGrid').ItemsSource=@()
+    (Get-UiControl 'ManagementResultBox').Text='Reload inventory after selecting a workload.'
+
+    $script:State['OperationsPreviewToken']=''
+    $script:State['OperationsDefinition']=$null
+    $script:State['OperationsFields']=@{}
+    (Get-UiControl 'OperationsFieldsPanel').Children.Clear()
+    (Get-UiControl 'OperationsCommandCombo').ItemsSource=@()
+    (Get-UiControl 'OperationsInventoryGrid').ItemsSource=@()
+    (Get-UiControl 'OperationsExecuteCheckBox').IsChecked=$false
+    (Get-UiControl 'OperationsScopeCheckBox').IsChecked=$false
+    (Get-UiControl 'OperationsResultBox').Text='Reload operations after selecting a workload.'
+
+    (Get-UiControl 'OperationsMemberIdsBox').Text=''
+}
+
 function Clear-WorkloadDataUi {
+    Clear-OperationsUi
     $script:State.WorkloadSelected = $false
+    $script:State['ContentOptions'] = $null
+    Set-ComboItems -Combo (Get-UiControl 'ContentObjectKindCombo') -Items @()
+    Set-ComboItems -Combo (Get-UiControl 'ContentTaskKindCombo') -Items @()
+    Set-GridItems -Grid (Get-UiControl 'ContentResultsGrid') -Items @()
+    (Get-UiControl 'ContentTemplateBox').Clear()
+    (Get-UiControl 'ContentAdminBox').Clear()
+    (Get-UiControl 'ContentExecuteCheckBox').IsChecked = $false
+    (Get-UiControl 'ContentStatusText').Text = 'Load options for the newly selected workload.'
     $script:State.TaskItems = @()
     $script:State.CollectionItems = @()
     $script:State.TemplateItems = @()
@@ -2100,7 +2449,15 @@ function Clear-WorkloadDataUi {
 }
 
 function Reset-WorkspaceUi {
+    Clear-OperationsUi
     $script:State.WorkloadSelected = $false
+    $script:State['ContentOptions'] = $null
+    Set-ComboItems -Combo (Get-UiControl 'ContentObjectKindCombo') -Items @()
+    Set-ComboItems -Combo (Get-UiControl 'ContentTaskKindCombo') -Items @()
+    Set-GridItems -Grid (Get-UiControl 'ContentResultsGrid') -Items @()
+    (Get-UiControl 'ContentExecuteCheckBox').IsChecked = $false
+    (Get-UiControl 'ContentTemplateBox').Clear()
+    (Get-UiControl 'ContentAdminBox').Clear()
     $script:State.TaskItems = @()
     $script:State.CollectionItems = @()
     $script:State.TemplateItems = @()
@@ -2162,6 +2519,9 @@ function Apply-ContextState {
         $workloadName = [string](Get-ObjectPropertyValue -InputObject $Context -Names @('WorkloadName'))
         $workloadType = [string](Get-ObjectPropertyValue -InputObject $Context -Names @('WorkloadType'))
         (Get-UiControl 'OverviewContextText').Text = "Region: $region`r`nOrganization: $organizationName [$organizationId]`r`nProject: $projectName [$projectId]`r`nWorkload: $workloadName — $workloadType [$workloadId]"
+    }
+    elseif ($connected -and [string](Get-ObjectPropertyValue $Context @('ContextMode')) -eq 'ActiveDirectory') {
+        (Get-UiControl 'OverviewContextText').Text=Get-UiActiveContextText
     }
     elseif ($connected -and -not $contextValid) {
         $contextError = [string](Get-ObjectPropertyValue -InputObject $Context -Names @('ContextError') -Default 'The Quest context is invalid. Reconnect before continuing.')
@@ -2355,7 +2715,7 @@ function Invoke-OdmApiModuleAction {
 
     $targetLabel = if ($Target -eq 'Validated') { 'the console-validated OdmApi version' } else { 'the latest PowerShell Gallery OdmApi version (not necessarily validated)' }
     $confirmation = "$Action $targetLabel for the current user?"
-    if ($Target -eq 'Latest') { $confirmation += "`r`n`r`nThis advanced action may install an API version that has not been validated with console 1.1.0-preview.6." }
+    if ($Target -eq 'Latest') { $confirmation += "`r`n`r`nThis advanced action may install an API version that has not been validated with console 1.1.0-rc.2." }
     if ($script:State.Connected) { $confirmation += "`r`n`r`nThe Quest session will be disconnected and the engine worker will restart." }
     if (-not (Confirm-UiAction -Text $confirmation -Title "$Action OdmApi")) { return }
 
@@ -2638,7 +2998,7 @@ function Format-AboutInfo {
 
     return @(
         "$([string](Get-ObjectPropertyValue -InputObject $BuildInfo -Names @('ProductName') -Default 'Quest ODM Operations Console'))",
-        "Version:             $([string](Get-ObjectPropertyValue -InputObject $BuildInfo -Names @('Version') -Default '1.1.0-preview.6'))",
+        "Version:             $([string](Get-ObjectPropertyValue -InputObject $BuildInfo -Names @('Version') -Default '1.1.0-rc.2'))",
         "Build:               $([string](Get-ObjectPropertyValue -InputObject $BuildInfo -Names @('BuildId'))) / $([string](Get-ObjectPropertyValue -InputObject $BuildInfo -Names @('BuildDateUtc')))",
         "Channel:             $([string](Get-ObjectPropertyValue -InputObject $BuildInfo -Names @('ReleaseChannel')))",
         "Supported host:      $([string](Get-ObjectPropertyValue -InputObject $BuildInfo -Names @('SupportedHost')))",
@@ -2801,6 +3161,52 @@ function Invoke-TaskFactoryFromUi {
         $groupCount = [int](Get-ObjectPropertyValue -InputObject $data -Names @('CollectionGroups') -Default 0)
         (Get-UiControl 'FactoryStatusText').Text = "Mode: $modeText | Execute: $executeValue | Resolved rows: $resolvedCount | Unresolved rows: $unresolvedCount | Collection groups: $groupCount"
         if ($executeValue) { Refresh-Workspace }
+    }
+}
+
+function Update-ContentTaskKinds {
+    Set-GridItems -Grid (Get-UiControl 'ContentResultsGrid') -Items @()
+    (Get-UiControl 'ContentStatusText').Text = 'Load inventory or preview a CSV for the selected object kind.'
+    $options = Get-ObjectPropertyValue -InputObject $script:State -Names @('ContentOptions')
+    $kind = [string](Get-UiControl 'ContentObjectKindCombo').SelectedItem
+    $specs = ConvertTo-UiObjectArray -InputObject (Get-ObjectPropertyValue -InputObject $options -Names @('TaskKinds') -Default @())
+    Set-ComboItems -Combo (Get-UiControl 'ContentTaskKindCombo') -Items @($specs | Where-Object { $_.ObjectKind -eq $kind })
+    if ((Get-UiControl 'ContentTaskKindCombo').Items.Count -gt 0) { (Get-UiControl 'ContentTaskKindCombo').SelectedIndex = 0 }
+    (Get-UiControl 'ContentTemplateBox').Clear()
+    (Get-UiControl 'ContentExecuteCheckBox').IsChecked = $false
+    Update-UiEnablement
+}
+
+function Invoke-ContentCsvFromUi {
+    param([bool]$Execute=$false)
+    $actionItem = (Get-UiControl 'ContentActionCombo').SelectedItem
+    $action = [string]$actionItem.Tag
+    $spec = (Get-UiControl 'ContentTaskKindCombo').SelectedItem
+    $csvPath = [string](Get-UiControl 'ContentCsvPathBox').Text
+    if ([string]::IsNullOrWhiteSpace($csvPath)) { Show-UiMessage -Text 'Choose a CSV with CollectionName and ObjectId; Tasks also requires TaskName.' -Type Warning; return }
+    if ($action -eq 'Tasks' -and ($null -eq $spec -or -not [bool]$spec.Available)) { Show-UiMessage -Text 'Choose an available task kind for this object kind.' -Type Warning; return }
+    if ($Execute -and -not [bool](Get-UiControl 'ContentExecuteCheckBox').IsChecked) { return }
+    $parameters = @{
+        CsvPath=$csvPath;ObjectKind=[string](Get-UiControl 'ContentObjectKindCombo').SelectedItem
+        Action=$action;Execute=$Execute;OutputDirectory=[string](Get-UiControl 'BulkOutputDirectoryBox').Text
+        LinkTasksToCollections=[bool](Get-UiControl 'ContentLinkCheckBox').IsChecked
+    }
+    if ($action -eq 'Tasks') {
+        $parameters.TaskKind = [string]$spec.Key
+        $parameters.TemplateId = ([string](Get-UiControl 'ContentTemplateBox').Text).Trim()
+        $parameters.DefaultAdminUser = ([string](Get-UiControl 'ContentAdminBox').Text).Trim()
+    }
+    if ($Execute) {
+        $context = $script:State.Context
+        $confirmation = "Execute $action for $($parameters.ObjectKind)?`r`nWorkload: $([string](Get-ObjectPropertyValue -InputObject $context -Names @('WorkloadName'))) [$([string](Get-ObjectPropertyValue -InputObject $context -Names @('WorkloadId')))]`r`nCSV: $csvPath`r`n`r`nAny new tasks will be held for review. Existing task names are skipped."
+        if ($action -eq 'Tasks') { $confirmation += "`r`nTask kind: $($spec.Name)`r`nTemplate: $($parameters.TemplateId)`r`nTarget administrator: $($parameters.DefaultAdminUser)" }
+        if (-not (Confirm-UiAction -Text $confirmation -Title 'Confirm workload CSV changes')) { return }
+    }
+    Invoke-EngineAsync -Operation 'ContentCsv' -Parameters $parameters -Status 'Validating workload CSV and processing objects...' -OnSuccess {
+        param($data)
+        Set-GridItems -Grid (Get-UiControl 'ContentResultsGrid') -Items (ConvertTo-UiObjectArray -InputObject $data.Rows)
+        (Get-UiControl 'ContentStatusText').Text = "$($data.Status) | $($data.Rows.Count) rows | Report: $($data.ReportPath)"
+        if ([bool]$data.Execute) { Refresh-Workspace }
     }
 }
 
@@ -3336,7 +3742,10 @@ $collectionCsvAction = {
 
 # Bulk operation events.
 (Get-UiControl 'BulkOperationCombo').Add_SelectionChanged({
-    Update-BulkOperationUi -Selected (Get-UiControl 'BulkOperationCombo').SelectedItem
+    Initialize-OperationsCenterUi
+    Initialize-ManagementUi
+    Initialize-AdUi
+Update-BulkOperationUi -Selected (Get-UiControl 'BulkOperationCombo').SelectedItem
 })
 (Get-UiControl 'BrowseBulkCsvButton').Add_Click({ Browse-ForCsv -TargetTextBox (Get-UiControl 'BulkCsvPathBox') })
 (Get-UiControl 'OpenBulkTemplateButton').Add_Click({ Open-BulkTemplate })
@@ -3450,6 +3859,51 @@ $script:Window.Add_Closing({
 })
 
 # Apply the initial bulk-operation selection after the event handler is registered.
+(Get-UiControl 'ContentLoadOptionsButton').Add_Click({
+    Invoke-EngineAsync -Operation 'ContentOptions' -Status 'Loading workload options...' -OnSuccess {
+        param($data)
+        $script:State['ContentOptions'] = $data
+        Set-ComboItems -Combo (Get-UiControl 'ContentObjectKindCombo') -Items (ConvertTo-UiObjectArray -InputObject $data.ObjectKinds)
+        if ((Get-UiControl 'ContentObjectKindCombo').Items.Count) { (Get-UiControl 'ContentObjectKindCombo').SelectedIndex = 0 }
+        (Get-UiControl 'ContentStatusText').Text = "$($data.Workload) options loaded. Load inventory or preview a CSV."
+    }
+})
+(Get-UiControl 'ContentObjectKindCombo').Add_SelectionChanged({ Update-ContentTaskKinds })
+(Get-UiControl 'ContentTaskKindCombo').Add_SelectionChanged({
+    (Get-UiControl 'ContentExecuteCheckBox').IsChecked = $false
+    $spec = (Get-UiControl 'ContentTaskKindCombo').SelectedItem
+    $text = 'No task creation is available for this object kind. Collection creation remains available.'
+    if ($null -ne $spec) {
+        $text = "$($spec.Details). "
+        if ([bool]$spec.RequiresTemplate) { $text += 'Uses the selected Quest template. Preview exports its settings for review.' }
+        else { $text += "Explicit settings: $($spec.Settings). Other settings use Quest defaults. Review the created task before starting." }
+    }
+    (Get-UiControl 'ContentSettingsText').Text = $text
+})
+(Get-UiControl 'ContentActionCombo').Add_SelectionChanged({ (Get-UiControl 'ContentExecuteCheckBox').IsChecked = $false; Update-UiEnablement })
+(Get-UiControl 'ContentExecuteCheckBox').Add_Checked({ Update-UiEnablement })
+(Get-UiControl 'ContentExecuteCheckBox').Add_Unchecked({ Update-UiEnablement })
+(Get-UiControl 'ContentBrowseButton').Add_Click({ Browse-ForCsv -TargetTextBox (Get-UiControl 'ContentCsvPathBox') })
+(Get-UiControl 'ContentPreviewButton').Add_Click({ Invoke-ContentCsvFromUi -Execute $false })
+(Get-UiControl 'ContentExecuteButton').Add_Click({ Invoke-ContentCsvFromUi -Execute $true })
+(Get-UiControl 'ContentInventoryButton').Add_Click({
+    Invoke-EngineAsync -Operation 'ContentInventory' -Parameters @{ObjectKind=[string](Get-UiControl 'ContentObjectKindCombo').SelectedItem} -Status 'Loading workload inventory...' -OnSuccess {
+        param($data)
+        Set-GridItems -Grid (Get-UiControl 'ContentResultsGrid') -Items (ConvertTo-UiObjectArray -InputObject $data.Rows)
+        (Get-UiControl 'ContentStatusText').Text = "$($data.Workload) / $($data.ObjectKind) | $($data.Rows.Count) objects. Export the grid to prepare a CSV."
+    }
+})
+(Get-UiControl 'ContentExportButton').Add_Click({
+    $items = ConvertTo-UiObjectArray -InputObject (Get-UiControl 'ContentResultsGrid').ItemsSource
+    if (-not $items.Count) { Show-UiMessage -Text 'Load inventory or preview a CSV first.' -Type Warning; return }
+    $dialog = New-Object Microsoft.Win32.SaveFileDialog
+    $dialog.Filter = 'CSV files (*.csv)|*.csv'
+    $dialog.FileName = 'WorkloadObjects.csv'
+    if ($dialog.ShowDialog($script:Window)) {
+        try { $items | Export-Csv -LiteralPath $dialog.FileName -NoTypeInformation -Encoding UTF8 }
+        catch { Show-UiMessage -Text $_.Exception.Message -Type Error }
+    }
+})
 Update-BulkOperationUi -Selected (Get-UiControl 'BulkOperationCombo').SelectedItem
 
 # Online module checks are user initiated from Diagnostics. Startup performs only a local check.

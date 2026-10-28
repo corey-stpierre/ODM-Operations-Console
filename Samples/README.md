@@ -20,3 +20,13 @@ All identities and GUIDs are placeholders.
 Discovery `Type` must be `user` or `Microsoft 365 group`. Discovery and mapping filenames must contain ASCII characters only and must not exceed 15 MB. Use exactly one supported identifier schema per file.
 
 Run write-capable workflows with **Execute changes** cleared first. Review the displayed rows and generated validation/report CSV before enabling execution.
+
+
+## RC1 native formats and pilot evidence
+
+`QuestTeamsMapping.csv`, `QuestPowerBIWorkspaceMapping.csv` and `QuestPowerBIGatewayMapping.csv` belong in the matching native task FilePath fields, not the content CSV batching tab. Replace every placeholder and use Guides for the exact schemas. `PilotAcceptance.csv` records connected validation results; it contains no completed live tests.
+
+
+## Active Directory samples (RC2)
+
+`ActiveDirectoryTargets.csv` demonstrates OrganizationId,TargetId with optional EnvironmentId and Kind guards. Replace every placeholder with values exported from the same AD organization. `ActiveDirectorySelfServiceTargets.csv` preserves opaque self-service IDs; they are not M365 GUIDs or ordinary AD integers. Select one action/form configuration per CSV. The exported Name,Status,Details fields are accepted and ignored; other unknown columns are rejected. All rows validate before writes. `ActiveDirectoryPilotAcceptance.csv` records approved connected pilot results and starts entirely NOT RUN. See the three AD chapters in the operator guide before any cutover, cleanup or shared-profile change.

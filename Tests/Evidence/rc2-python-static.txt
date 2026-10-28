@@ -1,0 +1,8 @@
+STATIC VALIDATION: PASS
+ - Required files: 89
+ - Legacy scripts: 16
+ - XAML controls: 273
+ - UI controls/operations: 260/46
+ - Mapping Collision Utility static validation: PASS
+ - PowerShell lexical files: 53
+ - Samples: 13

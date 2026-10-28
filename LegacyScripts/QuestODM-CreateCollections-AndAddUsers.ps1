@@ -1,4 +1,4 @@
-<#
+﻿<#
 QuestODM-CreateCollections-AndAddUsers.ps1
 
 Reads a CSV with:

@@ -1,11 +1,12 @@
 ﻿[CmdletBinding()]
 param(
-    [Parameter()][string]$RootPath = (Split-Path -Parent $PSScriptRoot),
+    [Parameter()][string]$RootPath,
     [switch]$RequireSigned
 )
 
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
+if([string]::IsNullOrWhiteSpace($RootPath)){$RootPath=Split-Path -Parent $PSScriptRoot}
 if ($env:OS -ne 'Windows_NT') { throw 'Authenticode signature validation requires Windows.' }
 $resolvedRoot = (Resolve-Path -LiteralPath $RootPath -ErrorAction Stop).Path
 $files = Get-ChildItem -LiteralPath $resolvedRoot -Recurse -File -ErrorAction Stop |
@@ -18,7 +19,7 @@ $results = [System.Collections.Generic.List[object]]::new()
 foreach ($file in $files) {
     $signature = Get-AuthenticodeSignature -LiteralPath $file.FullName -ErrorAction Stop
     $results.Add([pscustomobject]@{
-        File=$file.FullName.Substring($resolvedRoot.Length).TrimStart('\\','/')
+        File=$file.FullName.Substring($resolvedRoot.Length).TrimStart('\','/')
         Status=[string]$signature.Status
         StatusMessage=[string]$signature.StatusMessage
         Thumbprint=if ($null -ne $signature.SignerCertificate) { $signature.SignerCertificate.Thumbprint } else { $null }

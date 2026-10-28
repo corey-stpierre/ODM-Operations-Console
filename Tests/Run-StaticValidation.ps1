@@ -51,6 +51,7 @@ function Invoke-ValidationTest {
 }
 
 $required = @(
+    'Engine\OperationsCenter.ps1','Engine\Management.ps1','Config\OperationsCatalog.json','Config\OperatorGuides.json','Tests\Run-OperationsWpfTests.ps1','Tests\Run-RcAcceptance.ps1',
     'QuestODMConsole.ps1','QuestODMConsole.UI.ps1','VERSION.txt','README.md','RELEASE_NOTES.md','ROLLBACK.md','SUPPORT.md','NOTICE.md',
     'V1_RELEASE_VALIDATION.json','SIGNING_STATUS.txt','Config\BuildInfo.json','Config\OdmApiCompatibility.json','Engine\Governance.ps1',
     'Tools\Invoke-CodeSigning.ps1','Tools\Test-CodeSigning.ps1','Tools\New-ReleaseManifest.ps1','Shared\LogMaintenance.ps1',
@@ -67,8 +68,8 @@ $checks.Add("Required V1 files checked: $($required.Count)") | Out-Null
 
 try {
     $version = (Get-Content -LiteralPath (Join-Path $root 'VERSION.txt') -Raw -ErrorAction Stop).Trim()
-    if ($version -ne '1.1.0-preview.6') { Add-ValidationFailure "VERSION.txt contains '$version' instead of 1.1.0-preview.6." }
-    else { $checks.Add('Version marker is 1.1.0-preview.6') | Out-Null }
+    if ($version -ne '1.1.0-rc.2') { Add-ValidationFailure "VERSION.txt contains '$version' instead of 1.1.0-rc.2." }
+    else { $checks.Add('Version marker is 1.1.0-rc.2') | Out-Null }
 }
 catch { Add-ValidationFailure ("Version check failed: {0}" -f $_.Exception.Message) }
 
@@ -187,7 +188,7 @@ try {
 catch { Add-ValidationFailure ("XAML validation failed: {0}" -f $_.Exception.Message) }
 
 # V1 policy/settings JSON.
-foreach ($jsonName in @('Config\BuildInfo.json','Config\OdmApiCompatibility.json','Config\QuestODMConsole.settings.json','V1_RELEASE_VALIDATION.json')) {
+foreach ($jsonName in @('Config\ActiveDirectoryCatalog.json','Config\OperationsCatalog.json','Config\OperatorGuides.json','Config\BuildInfo.json','Config\OdmApiCompatibility.json','Config\QuestODMConsole.settings.json','V1_RELEASE_VALIDATION.json')) {
     try { $null = Get-Content -LiteralPath (Join-Path $root $jsonName) -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop }
     catch { Add-ValidationFailure ("Invalid JSON in {0}: {1}" -f $jsonName,$_.Exception.Message) }
 }
@@ -208,6 +209,7 @@ Invoke-ValidationTest -Name 'UI callback scope tests' -Path (Join-Path $root 'Te
 Invoke-ValidationTest -Name 'Mapping Collision Utility engine tests' -Path (Join-Path $root 'MappingCollisionUtility\Tests\Run-MappingCollisionTests.ps1') -Marker 'MAPPING COLLISION TESTS: PASS'
 
 if (-not $SkipMockEngineTests) {
+    Invoke-ValidationTest -Name 'Content workload tests' -Path (Join-Path $PSScriptRoot 'Run-ContentWorkloadTests.ps1') -Marker 'CONTENT WORKLOAD TESTS: PASS'
     Invoke-ValidationTest -Name 'Mock engine tests' -Path (Join-Path $PSScriptRoot 'Run-MockEngineTests.ps1') -Marker 'MOCK ENGINE TESTS: PASS'
     Invoke-ValidationTest -Name 'Worker boundary tests' -Path (Join-Path $PSScriptRoot 'Run-WorkerBoundaryTests.ps1') -Marker 'WORKER BOUNDARY TESTS: PASS'
 }
@@ -220,6 +222,9 @@ if (-not $SkipGovernanceTests) {
 if (-not $SkipWpfSmokeTest) {
     if (-not $isWindowsPlatform) { Add-ValidationFailure 'WPF tests require Windows.' }
     else {
+        Invoke-ValidationTest -Name 'Active Directory WPF tests' -Path (Join-Path $PSScriptRoot 'Run-ActiveDirectoryWpfTests.ps1') -Marker 'ACTIVE DIRECTORY WPF TESTS: PASS'
+        Invoke-ValidationTest -Name 'Operations Center WPF tests' -Path (Join-Path $PSScriptRoot 'Run-OperationsWpfTests.ps1') -Marker 'OPERATIONS WPF TESTS: PASS'
+        Invoke-ValidationTest -Name 'Content workload WPF tests' -Path (Join-Path $PSScriptRoot 'Run-ContentWpfTests.ps1') -Marker 'CONTENT WPF TESTS: PASS'
         Invoke-ValidationTest -Name 'WPF smoke test' -Path (Join-Path $PSScriptRoot 'Run-WpfSmokeTest.ps1') -Marker 'WPF SMOKE TEST: PASS'
         Invoke-ValidationTest -Name 'Mapping Collision Utility WPF smoke test' -Path (Join-Path $root 'MappingCollisionUtility\Tests\Run-WpfSmokeTest.ps1') -Marker 'MAPPING COLLISION WPF SMOKE TEST: PASS'
         Invoke-ValidationTest -Name 'UI initial-state tests' -Path (Join-Path $PSScriptRoot 'Run-UiInitialStateTests.ps1') -Marker 'UI INITIAL-STATE TESTS: PASS'

@@ -1,4 +1,14 @@
-﻿# Test Suite
+# RC1 test entry point
+
+Use `Run-RcAcceptance.ps1 -ModuleManifest <installed OdmApi.psd1>` with Windows PowerShell 5.1 and PowerShell 7 in x64 STA. It runs the ordinary full acceptance suite, then isolated native-command metadata/behavior tests. No authentication or service mutations are performed. Native tests require a locally installed vendor module; 2.1.401 is the full catalog baseline. Older modules are tested for correct unavailability gating.
+
+`Run-OperationsWpfTests.ps1` tests dynamic fields, gates, context resets, callbacks, themes and layout. Optional `-ScreenshotDirectory` saves rendered UI evidence. `Run-OperationsCenterTests.ps1` tests catalog contracts, choices, guarded creation, token expiry/invalidation/replay, CSV structure and ambiguous writes. `Run-ManagementTests.ps1` exercises actual vendor setters, schedule/hold, rename, template serialization and event acknowledgement with backend fixtures.
+
+Use an accessible temporary directory when the default OS temporary location is restricted. Test reports use synthetic identifiers only. Tests do not establish migration correctness or production readiness. Record live acceptance separately in `Samples/PilotAcceptance.csv`.
+
+## Prior test documentation
+
+# Test Suite
 
 ## Complete Windows acceptance
 
@@ -47,3 +57,25 @@ python Tests\StaticValidation.py
 python Tests\RuntimeSourceAudit.py
 python MappingCollisionUtility\Tests\StaticValidation.py
 ```
+# Preview 7 workload tests
+
+`Run-ContentWorkloadTests.ps1` runs all ten task routes with the offline Quest mock,
+including exact-ID resolution, duplicate input, Safe Mode, typed membership checks,
+held tasks, reruns, invalid CSVs, template type/ownership, and partial writes.
+`Run-ContentWpfTests.ps1` requires Windows x64 STA and checks the actual content
+controller, single-row result rendering, context reset, and write gates.
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Tests\Run-ContentWorkloadTests.ps1
+powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File .\Tests\Run-ContentWpfTests.ps1
+```
+
+`Run-ContentApiContractTests.ps1 -ModuleManifest <absolute OdmApi.psd1 path>` checks
+the installed parameters and configured default values without service calls.
+The feature tests also run from the full acceptance runner. Known existing baseline
+acceptance failures are listed in `WORKLOAD_VALIDATION.txt`; these tests do not waive them.
+Python checks require Pygments (the CI workflow installs version 2.21.0).
+
+
+
+RC2 adds `Run-ActiveDirectoryTests.ps1` to the isolated RC acceptance runner and `Run-ActiveDirectoryWpfTests.ps1` to static acceptance. The AD suite reads installed metadata for 27 getters and 20 actions, uses a real SDK Device model, and replaces only the console service-call boundary. It validates parameter conversions and console behavior without invoking compiled Quest AD cmdlets or authenticating. WPF tests exercise org-only AD entry, previews, context isolation, write gates, input invalidation and light/dark layout at 1180x760. Connected outcomes belong in `Samples/ActiveDirectoryPilotAcceptance.csv`.

@@ -25,7 +25,8 @@ function Import-ProductionFunction {
             [string]::Equals([string]$node.Name, $FunctionName, [StringComparison]::OrdinalIgnoreCase)
     }, $true))
     if ($matches.Count -ne 1) { throw "Expected one production definition for '$FunctionName'; found $($matches.Count)." }
-    . ([scriptblock]::Create([string]$matches[0].Extent.Text))
+    # Install in this test script's scope, not the short-lived helper scope.
+    . ([scriptblock]::Create(([string]$matches[0].Extent.Text -replace ('function\s+' + [regex]::Escape($FunctionName)), ('function script:' + $FunctionName))))
 }
 
 if ($env:OS -ne 'Windows_NT') { throw 'The overview persistence test requires Windows.' }
@@ -50,26 +51,14 @@ if (@($parseErrors).Count -gt 0) {
     throw ('The production UI controller does not parse: ' + ((@($parseErrors | ForEach-Object { $_.Message })) -join '; '))
 }
 
-foreach ($functionName in @(
-    'ConvertTo-UiObjectArray',
-    'Get-UiControl',
-    'Get-SelectedGridItems',
-    'Get-SelectedGridItem',
-    'Get-ObjectPropertyValue',
-    'Test-ObjectPropertyTrue',
-    'Get-UiSafeCount',
-    'Update-UiEnablement',
-    'Set-UiBusy',
-    'ConvertTo-OverviewCountText',
-    'Format-OverviewRefreshedAt',
-    'Show-OverviewSnapshot',
-    'Clear-OverviewSnapshot',
-    'Set-OverviewSnapshot',
-    'Set-OverviewRefreshPending',
-    'Set-OverviewRefreshFailed'
-)) {
-    Import-ProductionFunction -Ast $uiAst -FunctionName $functionName
+foreach ($definition in $uiAst.FindAll({param($n) $n -is [System.Management.Automation.Language.FunctionDefinitionAst]},$false)) {
+    . ([scriptblock]::Create($definition.Extent.Text))
 }
+$script:MappingCollisionUtilityRoot = Join-Path $appRoot 'MappingCollisionUtility'
+$script:MappingCollisionUtilityBootstrapPath = Join-Path $script:MappingCollisionUtilityRoot 'MappingCollisionUtility.ps1'
+$script:MappingCollisionUtilityXamlPath = Join-Path $script:MappingCollisionUtilityRoot 'Resources\MappingCollisionUtility.xaml'
+$script:MappingCollisionUtilityEnginePath = Join-Path $script:MappingCollisionUtilityRoot 'Engine\MappingCollisionEngine.psm1'
+$script:OperationHistoryPath = Join-Path $appRoot 'Logs\UnusedTestHistory.jsonl'
 
 $reader = $null
 $script:Window = $null
@@ -88,7 +77,9 @@ try {
         if ($null -ne $control) { $script:Ui[$name] = $control }
     }
 
-    $script:State = [ordered]@{
+    $stateDefinition=$uiAst.Find({param($n) $n -is [System.Management.Automation.Language.AssignmentStatementAst] -and $n.Left.Extent.Text -eq '$script:State'},$false)
+    . ([scriptblock]::Create($stateDefinition.Extent.Text))
+    $testOverrides = [ordered]@{
         Connected = $true
         WorkloadSelected = $true
         Busy = $false
@@ -99,6 +90,8 @@ try {
         OverviewSnapshot = $null
         OverviewStatusText = 'No workspace refresh has run.'
     }
+    foreach($key in $testOverrides.Keys){$script:State[$key]=$testOverrides[$key]}
+
 
     $script:SessionLogPath = Join-Path ([IO.Path]::GetTempPath()) ('QuestODMConsole-overview-test-' + [Guid]::NewGuid().ToString('N') + '.log')
     function Write-UiLog { param([string]$Message,[string]$Level='INFO') }

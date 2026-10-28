@@ -49,6 +49,7 @@ working-data/
 *.xls
 !Samples/**/*.csv
 !MappingCollisionUtility/Samples/**/*.csv
+!docs/QUEST_PARITY.csv
 
 # Build and packaging output
 build/

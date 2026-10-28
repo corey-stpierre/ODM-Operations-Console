@@ -1,102 +1,57 @@
-﻿# Quest ODM Operations Console — 1.1.0-preview.6
+# Quest ODM Operations Console — 1.1.0-rc.2
 
-Quest ODM Operations Console is a portable WPF administration application for governed Quest On Demand Migration workflows. Preview 6 is a corrective release based on `1.1.0-preview.5`. It fixes the post-operation UI callback failure reported by **Create collections and add users** and removes the same detached-closure pattern from every production UI callback.
+RC1 expands the existing Microsoft 365 migration console and repairs issues found during the audit. It includes Accounts, mailbox/OneDrive workflows, Teams/groups/chats, SharePoint, Power BI, Power Platform, public folders, Desktop Update Agent and Hybrid Exchange. RC2 adds Active Directory and device migration through a separate organization-scoped workspace. Hybrid SharePoint remains outside this release's scope.
 
-## Preview 6 bulk-operation callback correction
+**This is an unsigned candidate for pilot acceptance. Live Quest testing has not run. Full native web-console parity is not claimed.** See `RC_STATUS.html`, `V1_RELEASE_VALIDATION.json` and `docs/QUEST_PARITY.csv` for the exact coverage and remaining work.
 
-The Quest engine operation could complete successfully, generate its report, and apply requested changes, but the UI could then fail while displaying the result with:
+## Start
 
-```text
-The term 'Get-BulkResultRows' is not recognized as a name of a cmdlet, function, script file, or executable program.
-```
+1. Extract the entire package into a new folder. Keep your existing release available for rollback.
+2. Use `Start-QuestODMConsole-WindowsPowerShell.cmd` or `Start-QuestODMConsole-PowerShell7.cmd` on Windows x64. The launchers use STA. Follow your organization's unsigned-script policy; no machine execution policy is changed by this release.
+3. Inspect Diagnostics, connect, and select the organization. For M365 select a project/workload and run readiness. For AD open the Active Directory workspace and review the AD prerequisites in Guides; AD readiness checks host/storage and command availability while leaving tenant prerequisites explicitly unverified.
+4. Open **Guides** for workflows, CSV schemas, sample files, scope rules and recovery instructions. `OPERATOR_GUIDE.html` provides the same guide outside the application.
+5. Pilot a small held task and inspect its settings and members in Quest before starting it.
 
-The issue was caused by `GetNewClosure()` creating a detached dynamic module for callbacks that needed helper functions defined in `QuestODMConsole.UI.ps1`. Preview 6 now:
+## Added in RC2: Active Directory and devices
 
-- Stores callback context in the existing script-scoped UI state rather than a detached closure module.
-- Restores result-grid rendering for all Bulk Operations, including **Create collections and add users**.
-- Preserves the operation name and execute state through asynchronous completion.
-- Clears callback context on both success and failure.
-- Removes `GetNewClosure()` from all production UI callbacks, including profile loading, OdmApi module actions, task-detail failures, and support-dialog actions.
-- Warns that a backend operation is not rolled back when only its success callback fails.
-- Adds `Tests\Run-UiCallbackScopeTests.ps1` and static regression guards.
+- 27 bounded inventory/monitoring views and 20 action forms, checked against OdmApi 2.1.401 metadata. Includes directory workflows/runs/logs, device discovery/ReACL/cutover, credential caching, offline domain join, Entra ID cutover, file-share processing, shared-profile updates and self-service migration.
+- Organization-only selection supports AD-only organizations. AD and M365 selections are isolated; context switches reset Safe Mode and previews.
+- Exact-ID or guarded CSV targets, re-resolved references, future-date validation, redacted agent/service/auth keys, one-use previews and a journal before each submission. Partial/uncertain failure stops the rest of the batch; there is no automatic retry.
+- AD actions may start immediately. A scheduled earliest-start field is not a hold. Shared profile changes can affect devices outside the selected list. Submitted results require live readback and job/workflow monitoring.
+- Three AD guide chapters, example CSVs and a connected pilot worksheet. Existing environment/workflow/profile setup, agent deployment, new profile creation and unsupported settings use the Quest web-console handoff.
+- AD tests use real installed command metadata and a real device SDK model, with the service boundary replaced by fixtures. They do not invoke compiled vendor mutation cmdlets or certify their backend behavior.
 
-Because the original error occurred after the engine returned success, do not rerun an executed write solely because that UI message appeared. Review the generated report and Quest state first.
+## Added in RC1
 
-## Preview 5 Mapping Collision correction retained
+- **Operations Center:** 174 catalog entries: 109 creation commands and 65 update commands. 104 creation routes are enabled with OdmApi 2.1.401; five routes remain clearly marked web handoffs: address rewriting can execute immediately and replace fixed-ID tasks, and four SharePoint constructors lack an explicit scheduling parameter (single site/web/list mapping and object removal). Older modules show unavailable operations with a reason.
+- Fields use the loaded module's choices and parameter descriptions. Optional creation fields use vendor defaults; optional update fields preserve current settings. No arbitrary PowerShell expression execution is offered.
+- New tasks remain held. Existing tasks can be updated or scheduled with an explicit future ISO timestamp, or returned to hold. Task updates require the exact ID and task type; active tasks are blocked. Read back the resulting settings before relying on the update.
+- Typed inventories and exact object-ID lookup for Power Platform, Power BI, public folders and existing workloads.
+- Collection rename, task-to-template save, template import/export, current event acknowledgement and report metadata inventory. Each action has a preview; service changes require the write gates.
+- Preview expiry, one-use tokens, context/file/template/task-state binding, file hashes, redacted reports and no automatic retry after uncertain writes.
+- In-app guides, operator HTML manual, native mapping examples, pilot checklist and a route-by-route coverage table.
+- Original CSV batching, Task Factory, memberships, task lifecycle, diagnostics, themes, profiles, logs and Mapping Collision Utility remain available.
 
-- Empty result categories produce header-only CSVs and valid `No rows.` HTML sections instead of failing parameter binding.
-- `SMTP: user@example.com` proxy values are trimmed after the prefix and treated as valid anchors.
+## Corrections from the audit
 
-## Theme, log maintenance, and membership controls retained
+Empty organization results and readiness lists now normalize correctly. Task stop forwards its delay option. Task reporting uses the selected workload, and account Task Factory enforces the Accounts workload. CSV parsing rejects duplicate/blank headers and wrong field counts while preserving quoted commas and multiline values. Credential sanitization handles short JWT headers and JSON embedded in templates. Reports get unique filenames. CSV action footers remain usable at minimum window size; new fields and dropdowns use readable theme colors. Context changes clear the new forms and previews.
 
-- Main-console and Mapping Collision Utility Light/Dark themes remain persistent.
-- The corrected safe brush-mutation implementation remains in place.
-- Automatic and manual log retention remains available in both applications.
-- Tasks and Collections retain pinned **Add CSV users** and **Remove CSV users** action footers.
-- A write still requires global changes enabled, the local execute checkbox, one selected entity, and explicit confirmation.
+Several original test failures were test-harness issues: function import scope, stale state fixtures, invalid assumptions about WPF freezing, and an inaccessible temporary-file location. Tests now exercise the production functions and real WPF layout. These repairs are documented separately from production fixes in `AUDIT_REPORT.md`.
 
-## Mapping Collision Utility
+## Remaining Quest web-console work
 
-The separate read-only utility does not require a Quest connection. It exports Active Directory or Entra user inventory collectors, compares normalized identity anchors, and reports internal duplicates, cross-attribute conflicts, one-to-many and many-to-one ambiguity, split anchors, malformed values, inventory-quality issues, and unmatched source objects.
-
-Generated reports include:
-
-- `CollisionDetails.csv`
-- `MappingCandidates.csv`
-- `AmbiguousMappings.csv`
-- `InventoryQualityIssues.csv`
-- `UnmatchedSourceObjects.csv`
-- `MappingCollisionSummary.html`
-- `RunManifest.json`
-
-The collectors currently inventory **user objects only**. See [Mapping Collision Utility](MappingCollisionUtility/README.md).
-
-## Supported baseline
-
-- Windows x64 with WPF.
-- Main console: Windows PowerShell 5.1 or PowerShell 7, x64 STA.
-- Mapping Collision Utility UI: Windows PowerShell 5.1 x64 STA.
-- Quest interactive authentication.
-- Validated `OdmApi`: `2.1.396`.
-- Per-user data root: `%LOCALAPPDATA%\QuestODMConsole`.
-
-## Installation and launch
-
-1. Extract the complete ZIP into a new directory. Do not overlay Preview 6 onto an older extraction.
-2. Confirm `VERSION.txt` contains `1.1.0-preview.6`.
-3. Launch `Start-QuestODMConsole.cmd`.
-4. Keep global changes disabled until the active Quest organization, project, and workload are verified.
+Organization/project administration, tenant onboarding and consent, roles/subscriptions/licenses, workload setup, address rewriting, full report-file downloads, vendor-only dashboards and wizard settings not exposed by the inspected public module remain web-console actions. The Guides button opens Quest; it does not share authentication or perform those actions. Native API coverage is not equivalent to every web feature. The inspected module is 2.1.401; this does not assert it is the newest published module.
 
 ## Validation
 
-Run on a Windows test workstation:
+Run the documented offline suites before release. `Tests/Run-RcAcceptance.ps1` starts isolated native-module tests so their network fixtures cannot contaminate the ordinary acceptance suite. Pass the installed module manifest explicitly when validating 2.1.401:
 
 ```powershell
-powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File .\Tests\Run-V1Acceptance.ps1
+powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File .\Tests\Run-RcAcceptance.ps1 -ModuleManifest 'C:\path\to\OdmApi\2.1.401\OdmApi.psd1'
+pwsh.exe -NoProfile -STA -ExecutionPolicy Bypass -File .\Tests\Run-RcAcceptance.ps1 -ModuleManifest 'C:\path\to\OdmApi\2.1.401\OdmApi.psd1'
+python .\Tests\StaticValidation.py
+python .\Tests\RuntimeSourceAudit.py
+python .\MappingCollisionUtility\Tests\StaticValidation.py
 ```
 
-Focused tests:
-
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Tests\Run-UiCallbackScopeTests.ps1
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Tests\Run-LogMaintenanceTests.ps1
-powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File .\Tests\Run-WpfSmokeTest.ps1
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\MappingCollisionUtility\Tests\Run-MappingCollisionTests.ps1
-powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File .\MappingCollisionUtility\Tests\Run-WpfSmokeTest.ps1
-```
-
-This package is unsigned. Live Quest writes, AD collection, Entra collection, installed-production-`OdmApi` preflight, and native Windows WPF acceptance remain environment-specific release gates.
-
-## Repository development
-
-The application root is intentionally also the repository root because launchers, tests, governance checks, and release tools use root-relative paths. Do not move the package into a new `src` directory without a coordinated path refactor and full validation.
-
-See:
-
-- `REPOSITORY_SETUP.md` for the initial private GitHub import
-- `CONTRIBUTING.md` for branch, validation, and data-handling requirements
-- `SECURITY.md` for vulnerability and sensitive-data handling
-- `docs/ARCHITECTURE.md` for component boundaries
-- `docs/RELEASE_PROCESS.md` for tagging and packaging
-
-No public redistribution license is granted by this private internal source repository. Branding and third-party notices remain governed by `NOTICE.md` and `Resources/BRANDING.md`.
+No tests should be interpreted as a guarantee of defect-free behavior. Connected pilot results, approval of remaining gaps, code signing and a fresh signed-package manifest are the remaining production release gates. Use `Samples/PilotAcceptance.csv` to record results. See `ROLLBACK.md`, `SUPPORT.md`, `NOTICE.md`, `WORKLOAD_GUIDE.txt` and the historical notes under `docs/preview7-history` as needed.

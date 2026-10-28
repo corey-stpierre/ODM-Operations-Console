@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Platform-neutral validation for the Quest ODM Mapping Collision Utility."""
 from __future__ import annotations
 

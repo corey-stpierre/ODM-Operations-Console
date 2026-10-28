@@ -1,18 +1,7 @@
-# Rollback Guide
+# Rollback
 
-## Recommended rollback target
+Keep the last build your team accepted before evaluating RC1. Extract RC1 into a separate folder and avoid mixing release files.
 
-The stable rollback target is **Quest ODM Operations Console 1.0.3**. Preview 3 is not recommended as a rollback target because the supplied startup log demonstrated its theme-resource startup failure. Preview 2 may be retained only as a controlled test fallback when the Mapping Collision Utility is required without dark mode.
+Close the console and utility, preserve reports and logs from `%LOCALAPPDATA%\QuestODMConsole`, then launch the previously accepted build from its own folder. Verify its version and settings before connecting. Back up per-user settings before changing them for compatibility.
 
-## Procedure
-
-1. Close the main console and Mapping Collision Utility.
-2. Preserve any required reports or logs from `%LOCALAPPDATA%\QuestODMConsole`.
-3. Rename or remove the extracted Preview 6 application directory.
-4. Extract the selected rollback archive into a clean directory.
-5. Do not merge files from different releases.
-6. Launch the rollback build and verify `VERSION.txt` before connecting to Quest.
-
-Per-user settings are forward-compatible for common fields. A rollback build will ignore unknown `LogRetentionDays` data where applicable. Deleting `%LOCALAPPDATA%\QuestODMConsole\Config\QuestODMConsole.settings.json` resets main-console preferences; deleting the utility settings file resets only the Mapping Collision Utility preferences.
-
-Rollback does not reverse Quest operations already submitted. Review and reverse those migration changes separately when required.
+Changing application versions does not undo submitted Quest operations, schedules, template imports or acknowledgements. Inspect service state separately. Never retry a write merely because a UI error or timeout occurred.

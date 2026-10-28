@@ -1,6 +1,6 @@
 ﻿[CmdletBinding(DefaultParameterSetName = 'Store')]
 param(
-    [Parameter()][string]$RootPath = (Split-Path -Parent $PSScriptRoot),
+    [Parameter()][string]$RootPath,
     [Parameter(Mandatory = $true, ParameterSetName = 'Store')][string]$CertificateThumbprint,
     [Parameter(Mandatory = $true, ParameterSetName = 'Pfx')][string]$PfxPath,
     [Parameter(ParameterSetName = 'Pfx')][Security.SecureString]$PfxPassword,
@@ -10,6 +10,7 @@ param(
 
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
+if([string]::IsNullOrWhiteSpace($RootPath)){$RootPath=Split-Path -Parent $PSScriptRoot}
 
 if ($env:OS -ne 'Windows_NT') { throw 'Authenticode signing requires Windows.' }
 $resolvedRoot = (Resolve-Path -LiteralPath $RootPath -ErrorAction Stop).Path
@@ -55,7 +56,7 @@ $results = [System.Collections.Generic.List[object]]::new()
 foreach ($file in $files) {
     $signature = Set-AuthenticodeSignature -LiteralPath $file.FullName -Certificate $certificate -TimestampServer $TimestampServer -HashAlgorithm SHA256 -ErrorAction Stop
     $results.Add([pscustomobject]@{
-        File=$file.FullName.Substring($resolvedRoot.Length).TrimStart('\\','/')
+        File=$file.FullName.Substring($resolvedRoot.Length).TrimStart('\','/')
         Status=[string]$signature.Status
         StatusMessage=[string]$signature.StatusMessage
         SignerThumbprint=if ($null -ne $signature.SignerCertificate) { $signature.SignerCertificate.Thumbprint } else { $null }

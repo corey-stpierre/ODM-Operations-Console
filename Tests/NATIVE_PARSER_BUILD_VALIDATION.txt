@@ -1,10 +1,1 @@
-Native PowerShell parser, WPF palette/frozen-brush regression, log-maintenance execution, and Mapping Collision engine execution: NOT RUN
-Reason: a PowerShell runtime and Windows WPF are not installed on the Linux build host.
-
-Platform-neutral lexical, XAML, JSON, resource, controller-reference, sample-scenario, source-diff, and checksum checks: PASS after final packaging.
-
-Run on a Windows test workstation:
-powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File .\Tests\Run-V1Acceptance.ps1
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Tests\Run-LogMaintenanceTests.ps1
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\MappingCollisionUtility\Tests\Run-MappingCollisionTests.ps1
-powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File .\MappingCollisionUtility\Tests\Run-WpfSmokeTest.ps1
+RC1 native validation ran on Windows. Native PowerShell parsing, WPF, governance, engine/utility tests, callbacks and log-maintenance tests PASS on PS5.1 and PS7. See ../BUILD_VALIDATION.txt and Evidence for full results. Live Quest: NOT RUN.

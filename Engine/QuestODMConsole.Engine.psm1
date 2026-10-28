@@ -3,7 +3,7 @@
 $engineRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $script:QOdmEngineRoot = $engineRoot
 $script:QOdmAppRoot = Split-Path -Parent $engineRoot
-foreach ($file in @('Common.ps1','Governance.ps1','Context.ps1','Inventory.ps1','Membership.ps1','Accounts.ps1','Bulk.ps1','TaskFactory.ps1','LocalPreflight.ps1')) {
+foreach ($file in @('Common.ps1','Governance.ps1','Context.ps1','Inventory.ps1','Membership.ps1','Accounts.ps1','Bulk.ps1','TaskFactory.ps1','Workloads.ps1','OperationsCenter.ps1','Management.ps1','ActiveDirectory.ps1','LocalPreflight.ps1')) {
     $path = Join-Path -Path $engineRoot -ChildPath $file
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Quest ODM engine component not found: $path" }
     . $path
@@ -125,6 +125,28 @@ function Invoke-QOdmOperation {
         $data = $null
         $message = $null
         switch ($Operation) {
+            'OpenActiveDirectory' { $data=Open-QOdmActiveDirectory; $message='Active Directory workspace opened in Safe Mode.' }
+            'AdInventory' { $data=Get-QOdmAdInventoryView @arguments; $message=$data.Note }
+            'AdDefinition' { $data=Get-QOdmAdDefinition @arguments; $message='AD action fields loaded.' }
+            'AdAction' { $data=Invoke-QOdmAdAction @arguments; $message="Active Directory: $($data.Plan.Status)." }
+            'ManagementView' { $data=Get-QOdmManagementView @arguments; $message='Management inventory loaded.' }
+            'Management' { $data=Invoke-QOdmManagement @arguments; $message="Management: $($data.Plan.Status)." }
+            'OperationsCatalog' { $data=ConvertTo-QOdmObjectArray (Get-QOdmOperationsCatalog); $message='Workload operation catalog loaded.' }
+            'OperationsDefinition' { $data=Get-QOdmOperationsDefinition @arguments; $message='Operation fields loaded.' }
+            'OperationsInventory' { $data=Get-QOdmOperationsInventoryView @arguments; $message='Inventory loaded.' }
+            'OperationsTask' { $data=Invoke-QOdmOperationsTask @arguments; $message="Operation: $($data.Plan.Status)." }
+            'ContentOptions' {
+                $data = Get-QOdmContentOptions
+                $message = 'Workload options loaded.'
+            }
+            'ContentInventory' {
+                $data = Get-QOdmContentInventory @arguments
+                $message = 'Workload object inventory loaded.'
+            }
+            'ContentCsv' {
+                $data = Invoke-QOdmContentCsv @arguments
+                $message = "Workload CSV result: $($data.Status)."
+            }
             'Connect' {
                 $data = Connect-QOdmConsole @arguments
                 $message = 'Connected to Quest On Demand.'

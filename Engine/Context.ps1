@@ -109,6 +109,8 @@ function Get-QOdmContextState {
 
     [pscustomobject]@{
         Connected                = [bool](Get-QOdmProperty -InputObject $script:QOdmState -Names @('Connected') -Default $false)
+        ContextMode              = [string](Get-QOdmProperty $script:QOdmState @('ContextMode') 'Microsoft365')
+        ContextEpoch             = [string](Get-QOdmProperty $script:QOdmState @('ContextEpoch'))
         ContextValid             = [bool](Get-QOdmProperty -InputObject $script:QOdmState -Names @('ContextValid') -Default $true)
         ContextError             = Get-QOdmProperty -InputObject $script:QOdmState -Names @('ContextError')
         Region                   = Get-QOdmProperty -InputObject $script:QOdmState -Names @('Region')
@@ -129,7 +131,7 @@ function Get-QOdmContextState {
         ApiSurface               = Get-QOdmProperty -InputObject $script:QOdmState -Names @('ApiSurface')
         ConnectedAt              = Get-QOdmProperty -InputObject $script:QOdmState -Names @('ConnectedAt')
         LastRefresh              = Get-QOdmProperty -InputObject $script:QOdmState -Names @('LastRefresh')
-        ConsoleVersion           = [string](Get-QOdmProperty -InputObject $script:QOdmState -Names @('ConsoleVersion') -Default '1.1.0-preview.6')
+        ConsoleVersion           = [string](Get-QOdmProperty -InputObject $script:QOdmState -Names @('ConsoleVersion') -Default '1.1.0-rc.2')
         SafeMode                 = [bool](Get-QOdmProperty -InputObject $script:QOdmState -Names @('SafeMode') -Default $true)
         SafeModeReason           = [string](Get-QOdmProperty -InputObject $script:QOdmState -Names @('SafeModeReason') -Default 'Safe Mode enabled.')
         SafeModeChangedAt        = Get-QOdmProperty -InputObject $script:QOdmState -Names @('SafeModeChangedAt')
@@ -226,7 +228,7 @@ function Get-QOdmOrganizationsForConsole {
 
         $supported = $true
         try {
-            $raw = Invoke-QOdmSupportedCommandArray -CommandName $commandName
+            $raw = ConvertTo-QOdmObjectArray -InputObject (Invoke-QOdmSupportedCommandArray -CommandName $commandName)
             $expanded = ConvertTo-QOdmObjectArray -InputObject (Expand-QOdmDiscoveryItems -InputItems $raw)
             $convertedCount = 0
             $invalidIdCount = 0
@@ -409,7 +411,10 @@ function Connect-QOdmConsole {
         $null = Invoke-QOdmSupportedCommand -CommandName 'Connect-OdmService' -Parameters @{ Region = $Region.ToLowerInvariant() } -RequiredParameters @('Region')
 
         $script:QOdmState.Connected = $true
-        $script:QOdmState.ContextValid = $true
+        $script:QOdmState.ContextMode = 'Microsoft365'
+    $script:QOdmState.ContextEpoch = [guid]::NewGuid().ToString()
+    $script:QOdmAdPreview=$null
+    $script:QOdmState.ContextValid = $true
         $script:QOdmState.ContextError = $null
         $script:QOdmState.Region = $Region.ToUpperInvariant()
         $script:QOdmState.ConnectedAt = Get-Date
@@ -479,6 +484,9 @@ function Select-QOdmOrganizationContext {
     $resolvedOrganizationName = $OrganizationName
     if ([string]::IsNullOrWhiteSpace($resolvedOrganizationName)) { $resolvedOrganizationName = $parsedGuid.ToString() }
 
+    $script:QOdmState.ContextMode = 'Microsoft365'
+    $script:QOdmState.ContextEpoch = [guid]::NewGuid().ToString()
+    $script:QOdmAdPreview=$null
     $script:QOdmState.ContextValid = $true
     $script:QOdmState.ContextError = $null
     $script:QOdmState.OrganizationId = $parsedGuid.ToString()
@@ -526,6 +534,9 @@ function Select-QOdmProjectContext {
 
     Select-QOdmProjectSafe -Project $project -ProjectId $ProjectId
 
+    $script:QOdmState.ContextMode = 'Microsoft365'
+    $script:QOdmState.ContextEpoch = [guid]::NewGuid().ToString()
+    $script:QOdmAdPreview=$null
     $script:QOdmState.ContextValid = $true
     $script:QOdmState.ContextError = $null
     $script:QOdmState.ProjectId = $ProjectId
@@ -585,6 +596,9 @@ function Select-QOdmWorkloadContext {
         Select-QOdmProjectWorkloadSafe -Workload $workload -ProjectWorkloadId $WorkloadId
     }
 
+    $script:QOdmState.ContextMode = 'Microsoft365'
+    $script:QOdmState.ContextEpoch = [guid]::NewGuid().ToString()
+    $script:QOdmAdPreview=$null
     $script:QOdmState.ContextValid = $true
     $script:QOdmState.ContextError = $null
     $script:QOdmState.WorkloadId = $WorkloadId

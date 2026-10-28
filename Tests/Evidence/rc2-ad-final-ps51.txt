@@ -1,0 +1,2 @@
+AD command contracts: 20 actions, 27 inventories; no authentication or service calls.
+ACTIVE DIRECTORY TESTS: PASS

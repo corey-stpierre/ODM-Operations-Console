@@ -28,6 +28,8 @@ function Initialize-QOdmState {
 
     $script:QOdmState = [ordered]@{
         Connected                = $false
+        ContextMode              = 'Microsoft365'
+        ContextEpoch             = [guid]::NewGuid().ToString()
         ContextValid             = $true
         ContextError             = $null
         Region                   = $null
@@ -48,7 +50,7 @@ function Initialize-QOdmState {
         ModuleScopeValidated     = $moduleScopeValidated
         ApiSurface               = $apiSurface
         ConnectedAt              = $null
-        ConsoleVersion           = '1.1.0-preview.6'
+        ConsoleVersion           = '1.1.0-rc.2'
         SafeMode                 = $true
         SafeModeReason           = 'Safe Mode enabled at startup.'
         SafeModeChangedAt        = Get-Date
@@ -85,6 +87,9 @@ function Clear-QOdmSessionContext {
         $script:QOdmState.Region = $null
         $script:QOdmState.ConnectedAt = $null
     }
+    $script:QOdmState.ContextMode = 'Microsoft365'
+    $script:QOdmState.ContextEpoch = [guid]::NewGuid().ToString()
+    $script:QOdmAdPreview=$null
     $script:QOdmState.ContextValid = $true
     $script:QOdmState.ContextError = $null
     $script:QOdmState.OrganizationId = $null
@@ -1049,7 +1054,7 @@ function Resolve-QOdmProjectById {
 function Resolve-QOdmExactEntity {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)][object]$Entities,
+        [Parameter(Mandatory = $true)][AllowEmptyCollection()][object]$Entities,
         [AllowNull()][string]$Id,
         [AllowNull()][string]$Name,
         [Parameter(Mandatory = $true)][string]$EntityType
@@ -1350,6 +1355,7 @@ function Assert-QOdmOrganizationSelected {
 
 function Assert-QOdmWorkloadSelected {
     Assert-QOdmOrganizationSelected
+    if ((Get-QOdmProperty $script:QOdmState @('ContextMode')) -eq 'ActiveDirectory') { throw 'Select a Microsoft 365 project/workload to leave the AD workspace first.' }
     if ([string]::IsNullOrWhiteSpace([string]$script:QOdmState.WorkloadId)) { throw 'No Quest ODM workload is selected.' }
 }
 
@@ -1372,16 +1378,33 @@ function New-QOdmReportPath {
     param([AllowNull()][string]$OutputDirectory, [Parameter(Mandatory = $true)][string]$BaseName, [string]$Extension = '.csv')
     $directory = Get-QOdmOutputDirectory -OutputDirectory $OutputDirectory
     $stamp = Get-Date -Format 'yyyyMMdd-HHmmss-fff'
-    return (Join-Path $directory ("{0}_{1}{2}" -f $BaseName, $stamp, $Extension))
+    return (Join-Path $directory ("{0}_{1}_{2}{3}" -f $BaseName, $stamp, [Guid]::NewGuid().ToString('N').Substring(0,8), $Extension))
 }
 
 function Import-QOdmCsv {
     param([Parameter(Mandatory = $true)][string]$Path)
     if ([string]::IsNullOrWhiteSpace($Path)) { throw 'A CSV path is required.' }
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { throw "CSV file not found: $Path" }
-    $rows = ConvertTo-QOdmObjectArray -InputObject (Import-Csv -LiteralPath $Path)
-    if ($rows.Count -eq 0) { throw "CSV is empty or unreadable: $Path" }
-    return $rows
+    Add-Type -AssemblyName Microsoft.VisualBasic
+    $parser=New-Object Microsoft.VisualBasic.FileIO.TextFieldParser($Path,[Text.UTF8Encoding]::new($false,$true),$true)
+    $rows=[Collections.Generic.List[object]]::new()
+    try {
+        $parser.TextFieldType='Delimited';$parser.SetDelimiters(',');$parser.HasFieldsEnclosedInQuotes=$true;$parser.TrimWhiteSpace=$false
+        if($parser.EndOfData){throw 'CSV is empty.'}
+        $headers=$parser.ReadFields();$seen=@{}
+        foreach($header in $headers){
+            if([string]::IsNullOrWhiteSpace($header) -or $header -ne $header.Trim()){throw 'CSV headers must be nonblank with no surrounding spaces. Use comma separators.'}
+            if($seen.ContainsKey($header)){throw "Duplicate CSV header: $header"};$seen[$header]=$true
+        }
+        while(-not $parser.EndOfData){
+            $line=$parser.LineNumber;$fields=$parser.ReadFields()
+            if($fields.Count -ne $headers.Count){throw "CSV row at line $line has $($fields.Count) fields; expected $($headers.Count). Quote values containing commas."}
+            $row=[ordered]@{};for($i=0;$i -lt $headers.Count;$i++){$row[$headers[$i]]=$fields[$i]}
+            $rows.Add([pscustomobject]$row)|Out-Null
+        }
+        if(-not $rows.Count){throw 'CSV contains headers but no data rows.'}
+        return $rows.ToArray()
+    } finally {$parser.Close();$parser.Dispose()}
 }
 
 function Get-QOdmCsvHeaders {

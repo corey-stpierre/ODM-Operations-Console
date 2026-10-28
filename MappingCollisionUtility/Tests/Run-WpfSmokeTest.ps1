@@ -68,7 +68,7 @@ try {
     Assert-McuWpf -Condition ([bool]$window.FindName('CheckCrossAttributeCheckBox').IsChecked) -Message 'Cross-attribute checks must default on.'
     foreach ($resourceName in @('BackgroundBrush','SurfaceBrush','TextBrush','MutedBrush','SelectionBrush','WarningLightBrush')) {
         Assert-McuWpf -Condition ($null -ne $window.Resources[$resourceName]) -Message "Theme resource $resourceName was not created."
-        Assert-McuWpf -Condition (-not [bool]$window.Resources[$resourceName].IsFrozen) -Message "Theme resource $resourceName was unexpectedly frozen."
+        Assert-McuWpf -Condition ($window.Resources[$resourceName] -is [Windows.Media.SolidColorBrush]) -Message "Theme resource $resourceName is not a brush. WPF may freeze style resources; the production setter must replace them."
     }
     $frozenProbe = New-Object Windows.Media.SolidColorBrush ([Windows.Media.Colors]::Red)
     $frozenProbe.Freeze()
@@ -91,6 +91,12 @@ try {
     Assert-McuWpf -Condition (-not [bool]$script:Ui.DarkModeCheckBox.IsChecked) -Message 'Utility dark mode toggle was not synchronized to Light.'
     Assert-McuWpf -Condition ([string]$window.Resources['BackgroundBrush'].Color -eq '#FFF6FBFE') -Message 'Utility light palette was not restored.'
 
+    # A Window requires an HWND for layout. Keep the smoke-test window off screen.
+    $window.ShowInTaskbar=$false
+    $window.WindowStartupLocation='Manual'
+    $window.Left=-20000
+    $window.Top=-20000
+    $window.Show()
     $window.Measure([Windows.Size]::new(1450,920))
     $window.Arrange([Windows.Rect]::new(0,0,1450,920))
     $window.UpdateLayout()

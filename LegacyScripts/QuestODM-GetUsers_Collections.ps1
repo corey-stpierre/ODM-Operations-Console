@@ -1,4 +1,4 @@
-<#
+﻿<#
 Identify-OdmUserCollectionMembership.ps1
 
 Goal:

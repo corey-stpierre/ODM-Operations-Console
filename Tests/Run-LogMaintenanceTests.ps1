@@ -61,6 +61,7 @@ try {
     $bootstrapLengthBefore = (Get-Item -LiteralPath $bootstrap).Length
 
     $retention = Invoke-QOdmLogMaintenance -Application MainConsole -DataRoot $mainRoot -CurrentSessionLogPath $currentMain -RetentionDays 30 -Mode Retention
+    Assert-LogMaintenance -Condition ([int]$retention.FailureCount -eq 0) -Message ("Retention failures: " + ($retention.Failures -join '; '))
     Assert-LogMaintenance -Condition (-not (Test-Path -LiteralPath $oldMain)) -Message 'Expired console session log was not removed.'
     Assert-LogMaintenance -Condition (-not (Test-Path -LiteralPath $oldArchivedBootstrap)) -Message 'Expired archived bootstrap log was not removed.'
     Assert-LogMaintenance -Condition (Test-Path -LiteralPath $recentMain) -Message 'Recent console session log was removed.'

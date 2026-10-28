@@ -1,0 +1,35 @@
+{
+  "Product": "Quest ODM Operations Console",
+  "Version": "1.1.0-preview.7",
+  "BuildDateUtc": "2026-10-15T18:58:40+00:00",
+  "BuildId": "V1.1-PREVIEW-20261015.7",
+  "BuildHost": "Windows",
+  "BaselineVersion": "1.1.0-preview.6",
+  "ReleaseType": "Development preview - workload console extension",
+  "PlatformNeutralValidation": "PASS",
+  "RuntimeSourceAudit": "PASS",
+  "WindowsNativePowerShellParser": "PASS",
+  "ContentWorkloadEnginePowerShell51": "PASS",
+  "ContentWorkloadEnginePowerShell7": "PASS",
+  "ContentWorkloadWpfController": "PASS",
+  "InstalledOdmApiPreflight": "PASS (2.1.396)",
+  "ContentApiParameterContracts": {
+    "2.1.396": "PASS",
+    "2.1.401": "PASS"
+  },
+  "FullAcceptance": "FAIL - reproduced on unchanged baseline",
+  "BaselineAcceptanceFailures": [
+    "Log maintenance: expired bootstrap log reset assertion",
+    "Mock engine: empty organization response fallback assertion",
+    "Governance readiness: empty List argument rejected",
+    "Main WPF smoke: SurfaceBrush frozen assertion",
+    "Mapping Collision WPF smoke: SurfaceBrush frozen assertion",
+    "UI initial-state test helper import scope",
+    "Overview persistence test helper import scope"
+  ],
+  "LiveQuestValidation": "NOT_RUN",
+  "AuthenticodeStatus": "UNSIGNED",
+  "PackageManifestVerification": "PASS",
+  "ZipArchiveIntegrity": "PASS",
+  "ProductionReleaseApproved": false
+}

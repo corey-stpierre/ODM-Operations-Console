@@ -72,7 +72,7 @@ try {
     Assert-WpfCondition -Condition ($null -eq $window.FindName('IntegratedAuthCheckBox')) -Message 'Integrated authentication control must not exist.'
     foreach ($resourceName in @('BackgroundBrush','SurfaceBrush','TextBrush','MutedBrush','SelectionBrush','WarningLightBrush','DangerLightBrush')) {
         Assert-WpfCondition -Condition ($null -ne $window.Resources[$resourceName]) -Message "Theme resource $resourceName was not created."
-        Assert-WpfCondition -Condition (-not [bool]$window.Resources[$resourceName].IsFrozen) -Message "Theme resource $resourceName was unexpectedly frozen."
+        Assert-WpfCondition -Condition ($window.Resources[$resourceName] -is [Windows.Media.SolidColorBrush]) -Message "Theme resource $resourceName is not a brush. WPF may freeze style resources; the production setter must replace them."
     }
     $frozenProbe = New-Object Windows.Media.SolidColorBrush ([Windows.Media.Colors]::Red)
     $frozenProbe.Freeze()
@@ -187,6 +187,12 @@ try {
         Assert-WpfCondition -Condition ($bottom -le ($Card.ActualHeight + 1)) -Message "$ControlName is vertically clipped below $($Card.Name)."
     }
 
+    # A Window requires an HWND for layout. Keep the smoke-test window off screen.
+    $window.ShowInTaskbar=$false
+    $window.WindowStartupLocation='Manual'
+    $window.Left=-20000
+    $window.Top=-20000
+    $window.Show()
     $window.Width = [double]$window.MinWidth
     $window.Height = [double]$window.MinHeight
     $minimumSize = [Windows.Size]::new([double]$window.MinWidth, [double]$window.MinHeight)

@@ -1,6 +1,7 @@
 ﻿Set-StrictMode -Version 2.0
 
 $script:Connected = $false
+$script:ContentScenario = $false
 $script:OrganizationId = [Guid]::Empty
 $script:CurrentProject = $null
 $script:ModuleName = $null
@@ -249,10 +250,15 @@ function Select-OdmProjectWorkload {
     }
 }
 function Get-OdmObject {
-    [CmdletBinding()] param([Parameter(ValueFromPipeline=$true)][object]$FilterObject,[hashtable]$WildcardFilter,[string]$Id,[string]$Name,[switch]$All,[switch]$IncludeAllProperties,[switch]$IncludeCollections)
+    [CmdletBinding()] param([Parameter(ValueFromPipeline=$true)][object]$FilterObject,[hashtable]$WildcardFilter,[string]$Id,[string]$Name,[switch]$All,[switch]$IncludeAllProperties,[switch]$IncludeCollections,[string]$TypeOfTeam='Teams',[string]$TypeOfPowerBi='Workspace')
     process {
         Assert-MockProject
         $result=@($script:Objects)
+        if ($script:ContentScenario) {
+            $result=@($result | Where-Object {$_.ProjectId -eq (Get-MockContextId)})
+            if ($script:CurrentProject.WorkloadType -eq 'Teams') { $result=@($result | Where-Object {$_.Kind -eq $TypeOfTeam}) }
+            if ($script:CurrentProject.WorkloadType -eq 'PowerBI') { $result=@($result | Where-Object {$_.Kind -eq $TypeOfPowerBi}) }
+        }
         if($null -ne $FilterObject){
             $ids=@($FilterObject.ObjectIds)
             $result=@($result|Where-Object{$ids -contains $_.Id})
@@ -520,3 +526,4 @@ Export-ModuleMember -Function @(
     'Get-OdmRoleAssignments','Get-OdmRoles','Get-EffectiveMigrationSubscription','Test-ActiveMigrationSubscription',
     'Get-OdmEvent','Get-OdmReporting','Get-OdmReportInfo','Get-OdmReport','New-OdmReportingErrorLogsExportTask','Get-MockOdmState'
 )
+. (Join-Path $PSScriptRoot 'ContentMocks.ps1')
